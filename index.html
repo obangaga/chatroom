@@ -12,6 +12,7 @@
     --border: #1e1e2e;
     --accent: #00ff88;
     --accent2: #00aaff;
+    --danger: #ff4466;
     --text: #e8e8f0;
     --muted: #555570;
     --msg-mine: #00ff8820;
@@ -68,13 +69,7 @@
     background: linear-gradient(90deg, var(--accent), var(--accent2));
   }
 
-  .login-logo {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: -2px;
-    margin-bottom: 4px;
-  }
-
+  .login-logo { font-size: 2.5rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 4px; }
   .login-logo span { color: var(--accent); }
 
   .login-sub {
@@ -85,139 +80,166 @@
     letter-spacing: 2px;
   }
 
-  .tab-bar {
-    display: flex;
-    margin-bottom: 20px;
-    border: 1px solid var(--border);
-  }
+  .tab-bar { display: flex; margin-bottom: 20px; border: 1px solid var(--border); }
 
   .tab-btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    transition: all 0.2s;
+    flex: 1; padding: 10px; border: none;
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    cursor: pointer; font-size: 0.85rem; letter-spacing: 1px; transition: all 0.2s;
   }
 
   .tab-btn.active { background: var(--accent); color: #000; }
   .tab-btn.inactive { background: transparent; color: var(--muted); }
 
   .login-box input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 13px 16px;
-    font-family: 'Syne', sans-serif;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 10px;
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 13px 16px; font-family: 'Syne', sans-serif;
+    font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 10px;
   }
 
   .login-box input:focus { border-color: var(--accent); }
   .login-box input::placeholder { color: var(--muted); }
 
   .error-msg {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem;
-    color: #ff4466;
-    margin-bottom: 10px;
-    min-height: 18px;
+    font-family: 'Space Mono', monospace; font-size: 0.68rem;
+    color: var(--danger); margin-bottom: 10px; min-height: 18px;
   }
 
   .login-btn {
-    width: 100%;
-    background: var(--accent);
-    color: #000;
-    border: none;
-    padding: 14px;
-    font-family: 'Syne', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: opacity 0.2s, transform 0.1s;
+    width: 100%; background: var(--accent); color: #000; border: none;
+    padding: 14px; font-family: 'Syne', sans-serif; font-size: 1rem;
+    font-weight: 700; cursor: pointer; letter-spacing: 1px; transition: opacity 0.2s, transform 0.1s;
   }
 
   .login-btn:hover { opacity: 0.85; }
   .login-btn:active { transform: scale(0.98); }
   .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  #app {
-    display: none;
-    flex-direction: column;
-    height: 100vh;
-    position: relative;
-    z-index: 1;
-  }
+  #app { display: none; flex-direction: column; height: 100vh; position: relative; z-index: 1; }
 
   header {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--surface);
-    flex-shrink: 0;
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface); flex-shrink: 0;
   }
 
   .header-left { display: flex; align-items: center; gap: 12px; }
-
   .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; }
   .logo span { color: var(--accent); }
 
   .room-badge {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--accent);
-    background: #00ff8815;
-    border: 1px solid #00ff8830;
-    padding: 3px 10px;
-    letter-spacing: 1px;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--accent); background: #00ff8815; border: 1px solid #00ff8830;
+    padding: 3px 10px; letter-spacing: 1px;
+  }
+
+  .admin-badge {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: #ffaa00; background: #ffaa0015; border: 1px solid #ffaa0030;
+    padding: 3px 10px; letter-spacing: 1px;
   }
 
   .online-count {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--muted); display: flex; align-items: center; gap: 6px;
   }
 
-  .dot {
-    width: 6px; height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
+  .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
 
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
   }
 
-  .user-info {
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  .user-info { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .user-info strong { color: var(--accent2); }
+
+  /* TOMBOL HAPUS CHAT - hanya muncul untuk admin */
+  #clear-btn {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 6px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  #clear-btn:hover { background: var(--danger); color: #fff; }
+
+  /* CONFIRM DIALOG */
+  #confirm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #00000080;
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #confirm-overlay.show { display: flex; }
+
+  .confirm-box {
+    background: var(--surface);
+    border: 1px solid var(--danger);
+    padding: 32px;
+    max-width: 320px;
+    width: 90%;
+    position: relative;
+  }
+
+  .confirm-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--danger);
+  }
+
+  .confirm-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--danger);
+  }
+
+  .confirm-desc {
     font-family: 'Space Mono', monospace;
     font-size: 0.7rem;
     color: var(--muted);
+    margin-bottom: 24px;
+    line-height: 1.6;
   }
 
-  .user-info strong { color: var(--accent2); }
+  .confirm-btns { display: flex; gap: 10px; }
+
+  .btn-cancel {
+    flex: 1; padding: 10px; background: transparent;
+    border: 1px solid var(--border); color: var(--muted);
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+
+  .btn-cancel:hover { border-color: var(--text); color: var(--text); }
+
+  .btn-confirm-del {
+    flex: 1; padding: 10px; background: var(--danger);
+    border: none; color: #fff;
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+
+  .btn-confirm-del:hover { opacity: 0.85; }
 
   #messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    scroll-behavior: smooth;
+    flex: 1; overflow-y: auto; padding: 24px;
+    display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;
   }
 
   #messages::-webkit-scrollbar { width: 4px; }
@@ -225,9 +247,7 @@
   #messages::-webkit-scrollbar-thumb { background: var(--border); }
 
   .msg {
-    display: flex;
-    flex-direction: column;
-    max-width: 70%;
+    display: flex; flex-direction: column; max-width: 70%;
     animation: msgIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
@@ -239,88 +259,46 @@
   .msg.mine { align-self: flex-end; align-items: flex-end; }
   .msg.other { align-self: flex-start; align-items: flex-start; }
 
-  .msg-name {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    margin-bottom: 4px;
-    letter-spacing: 1px;
-  }
-
+  .msg-name { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-bottom: 4px; letter-spacing: 1px; }
   .msg.mine .msg-name { color: var(--accent2); }
 
-  .msg-bubble {
-    padding: 10px 16px;
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
+  .msg-bubble { padding: 10px 16px; font-size: 0.95rem; line-height: 1.5; }
 
   .msg.mine .msg-bubble {
-    background: var(--msg-mine);
-    border: 1px solid #00ff8830;
+    background: var(--msg-mine); border: 1px solid #00ff8830;
     border-radius: 12px 12px 2px 12px;
   }
 
   .msg.other .msg-bubble {
-    background: var(--msg-other);
-    border: 1px solid var(--border);
+    background: var(--msg-other); border: 1px solid var(--border);
     border-radius: 12px 12px 12px 2px;
   }
 
-  .msg-time {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--muted);
-    margin-top: 4px;
-  }
+  .msg-time { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); margin-top: 4px; }
 
   .sys-msg {
-    text-align: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 1px;
-    padding: 4px 0;
+    text-align: center; font-family: 'Space Mono', monospace;
+    font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; padding: 4px 0;
   }
 
   footer {
-    padding: 16px 24px;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-shrink: 0;
+    padding: 16px 24px; border-top: 1px solid var(--border);
+    background: var(--surface); display: flex; gap: 12px; align-items: center; flex-shrink: 0;
   }
 
   #input {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 12px 16px;
-    font-family: 'Syne', sans-serif;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s;
-    border-radius: 4px;
+    flex: 1; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 12px 16px; font-family: 'Syne', sans-serif;
+    font-size: 0.95rem; outline: none; transition: border-color 0.2s; border-radius: 4px;
   }
 
   #input:focus { border-color: var(--accent); }
   #input::placeholder { color: var(--muted); }
 
   #send-btn {
-    background: var(--accent);
-    color: #000;
-    border: none;
-    width: 44px; height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: opacity 0.2s, transform 0.1s;
-    flex-shrink: 0;
+    background: var(--accent); color: #000; border: none;
+    width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border-radius: 4px; transition: opacity 0.2s, transform 0.1s; flex-shrink: 0;
   }
 
   #send-btn:hover { opacity: 0.85; }
@@ -328,23 +306,14 @@
   #send-btn svg { width: 18px; height: 18px; }
 
   .typing-indicator {
-    display: none;
-    align-items: center;
-    gap: 6px;
-    padding: 0 24px;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    height: 24px;
-    flex-shrink: 0;
+    display: none; align-items: center; gap: 6px; padding: 0 24px;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--muted); height: 24px; flex-shrink: 0;
   }
 
   .typing-dots span {
-    display: inline-block;
-    width: 4px; height: 4px;
-    background: var(--muted);
-    border-radius: 50%;
-    animation: typingDot 1.2s infinite;
+    display: inline-block; width: 4px; height: 4px;
+    background: var(--muted); border-radius: 50%; animation: typingDot 1.2s infinite;
   }
 
   .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -376,6 +345,18 @@
   </div>
 </div>
 
+<!-- CONFIRM DIALOG -->
+<div id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">⚠ Hapus Semua Chat?</div>
+    <div class="confirm-desc">Semua pesan akan dihapus permanen dan tidak bisa dikembalikan.</div>
+    <div class="confirm-btns">
+      <button class="btn-cancel" onclick="closeConfirm()">BATAL</button>
+      <button class="btn-confirm-del" onclick="doDeleteAll()">HAPUS SEMUA</button>
+    </div>
+  </div>
+</div>
+
 <!-- APP -->
 <div id="app">
   <header>
@@ -384,7 +365,10 @@
       <div class="room-badge"># GLOBAL</div>
       <div class="online-count"><div class="dot"></div><span id="online-count">1 online</span></div>
     </div>
-    <div class="user-info">logged as <strong id="display-username"></strong></div>
+    <div class="header-right">
+      <button id="clear-btn" onclick="showConfirm()">🗑 HAPUS CHAT</button>
+      <div class="user-info">logged as <strong id="display-username"></strong> <span id="admin-tag"></span></div>
+    </div>
   </header>
 
   <div id="messages"></div>
@@ -409,6 +393,8 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getDatabase, ref, push, onValue, set, get, remove, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
+  const ADMIN_USERNAME = 'oban';
+
   const firebaseConfig = {
     apiKey: "AIzaSyDUmhjXaatxyWoBK01sN3KtxvytCK52Z1s",
     authDomain: "obanchat.firebaseapp.com",
@@ -425,6 +411,7 @@
   let myUsername = '';
   let currentTab = 'login';
   let typingTimeout;
+  let messagesRef;
 
   window.switchTab = function(tab) {
     currentTab = tab;
@@ -443,7 +430,6 @@
     const btn = document.getElementById('action-btn');
 
     errEl.textContent = '';
-
     if (!username) { errEl.textContent = '⚠ Nama tidak boleh kosong'; return; }
     if (!/^\d{4}$/.test(pin)) { errEl.textContent = '⚠ PIN harus tepat 4 angka'; return; }
 
@@ -457,27 +443,19 @@
       if (currentTab === 'register') {
         if (snapshot.exists()) {
           errEl.textContent = '⚠ Nama sudah digunakan, coba nama lain';
-          btn.disabled = false;
-          btn.textContent = 'DAFTAR →';
-          return;
+          btn.disabled = false; btn.textContent = 'DAFTAR →'; return;
         }
         await set(userRef, { pin, createdAt: Date.now() });
         myUsername = username;
         startChat();
-
       } else {
         if (!snapshot.exists()) {
           errEl.textContent = '⚠ Nama tidak ditemukan, silakan register dulu';
-          btn.disabled = false;
-          btn.textContent = 'MASUK →';
-          return;
+          btn.disabled = false; btn.textContent = 'MASUK →'; return;
         }
-        const data = snapshot.val();
-        if (data.pin !== pin) {
+        if (snapshot.val().pin !== pin) {
           errEl.textContent = '⚠ PIN salah, coba lagi';
-          btn.disabled = false;
-          btn.textContent = 'MASUK →';
-          return;
+          btn.disabled = false; btn.textContent = 'MASUK →'; return;
         }
         myUsername = username;
         startChat();
@@ -489,28 +467,39 @@
     }
   }
 
-  document.getElementById('pin-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') window.handleAuth();
-  });
-  document.getElementById('username-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') document.getElementById('pin-input').focus();
-  });
+  document.getElementById('pin-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') window.handleAuth(); });
+  document.getElementById('username-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('pin-input').focus(); });
+
+  // CONFIRM DIALOG
+  window.showConfirm = () => { document.getElementById('confirm-overlay').className = 'show'; }
+  window.closeConfirm = () => { document.getElementById('confirm-overlay').className = ''; }
+  window.doDeleteAll = async () => {
+    await remove(ref(db, 'chatx/global/messages'));
+    push(ref(db, 'chatx/global/messages'), { system: true, text: 'Admin telah menghapus semua chat' });
+    closeConfirm();
+  }
 
   function startChat() {
-    const messagesRef = ref(db, 'chatx/global/messages');
+    messagesRef = ref(db, 'chatx/global/messages');
     const typingRef = ref(db, `chatx/global/typing/${myUsername}`);
     const presenceRef = ref(db, `chatx/global/presence/${myUsername}`);
 
+    // Tampilkan app
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
     document.getElementById('display-username').textContent = myUsername;
+
+    // Kalau admin, tampilkan tombol hapus & badge
+    if (myUsername === ADMIN_USERNAME) {
+      document.getElementById('clear-btn').style.display = 'block';
+      document.getElementById('admin-tag').innerHTML = '<span style="color:#ffaa00;font-size:0.6rem;">[ADMIN]</span>';
+    }
 
     set(presenceRef, true);
     onDisconnect(presenceRef).remove();
 
     onValue(ref(db, 'chatx/global/presence'), (snap) => {
-      let count = 0;
-      snap.forEach(() => count++);
+      let count = 0; snap.forEach(() => count++);
       document.getElementById('online-count').textContent = count + ' online';
     });
 
@@ -519,27 +508,20 @@
       msgs.innerHTML = '';
       snapshot.forEach(child => {
         const data = child.val();
-        if (data.system) {
-          addSystemMsg(data.text);
-        } else {
-          addMessage(data.username, data.text, data.username === myUsername, data.time);
-        }
+        if (data.system) addSystemMsg(data.text);
+        else addMessage(data.username, data.text, data.username === myUsername, data.time);
       });
       msgs.scrollTop = msgs.scrollHeight;
     });
 
     onValue(ref(db, 'chatx/global/typing'), (snapshot) => {
       const typers = [];
-      snapshot.forEach(child => {
-        if (child.key !== myUsername) typers.push(child.key);
-      });
+      snapshot.forEach(child => { if (child.key !== myUsername) typers.push(child.key); });
       const ti = document.getElementById('typing-indicator');
       if (typers.length > 0) {
         ti.style.display = 'flex';
         document.getElementById('typing-text').textContent = typers.join(', ') + ' sedang mengetik...';
-      } else {
-        ti.style.display = 'none';
-      }
+      } else { ti.style.display = 'none'; }
     });
 
     push(messagesRef, { system: true, text: `${myUsername} bergabung ke chat` });
@@ -558,8 +540,7 @@
       const text = input.value.trim();
       if (!text) return;
       push(messagesRef, {
-        username: myUsername,
-        text,
+        username: myUsername, text,
         time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
       });
       remove(typingRef);
@@ -595,4 +576,5 @@
 
 </body>
 </html>
+
 
