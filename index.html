@@ -570,6 +570,17 @@
     const inputEl = document.getElementById('input');
     // Auto resize textarea
     inputEl.addEventListener('input', () => {
+      // Nonaktifkan tombol kirim jika teks > 100 karakter
+      const sendBtn = document.getElementById('send-btn');
+      if (inputEl.value.length > 100) {
+        sendBtn.disabled = true;
+        sendBtn.style.opacity = '0.3';
+        sendBtn.style.cursor = 'not-allowed';
+      } else {
+        sendBtn.disabled = false;
+        sendBtn.style.opacity = '1';
+        sendBtn.style.cursor = 'pointer';
+      }
       inputEl.style.height = 'auto';
       inputEl.style.height = Math.min(inputEl.scrollHeight, 200) + 'px';
     });
@@ -586,6 +597,7 @@
       const input = document.getElementById('input');
       const text = input.value.trim();
       if (!text) return;
+      if (text.length > 100) return;
       push(messagesRef, {
         username: myUsername, text,
         time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
@@ -593,6 +605,8 @@
       remove(typingRef);
       clearTimeout(typingTimeout);
       input.value = ''; input.style.height = 'auto';
+      const sendBtn = document.getElementById('send-btn');
+      sendBtn.disabled = false; sendBtn.style.opacity = '1'; sendBtn.style.cursor = 'pointer';
     }
   }
 
@@ -726,6 +740,7 @@
 
 </body>
 </html>
+
 
 
 
