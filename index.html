@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChatX</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #00ff88;
+    --accent2: #00aaff;
+    --text: #e8e8f0;
+    --muted: #555570;
+    --msg-mine: #00ff8820;
+    --msg-other: #1a1a2e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 50% at 20% 0%, #00ff8808 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, #00aaff08 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* LOGIN SCREEN */
+  #login-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    background: var(--bg);
+  }
+
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 380px;
+    position: relative;
+  }
+
+  .login-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+
+  .login-logo {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 4px;
+  }
+
+  .login-logo span { color: var(--accent); }
+
+  .login-sub {
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    margin-bottom: 36px;
+    letter-spacing: 2px;
+  }
+
+  .login-box input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 14px 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+
+  .login-box input:focus { border-color: var(--accent); }
+  .login-box input::placeholder { color: var(--muted); }
+
+  .login-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 14px;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .login-btn:hover { opacity: 0.85; }
+  .login-btn:active { transform: scale(0.98); }
+
+  /* CHAT APP */
+  #app {
+    display: none;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  .logo span { color: var(--accent); }
+
+  .room-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    background: #00ff8815;
+    border: 1px solid #00ff8830;
+    padding: 3px 10px;
+    letter-spacing: 1px;
+  }
+
+  .online-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .user-info {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .user-info strong { color: var(--accent2); }
+
+  /* MESSAGES */
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+  }
+
+  #messages::-webkit-scrollbar { width: 4px; }
+  #messages::-webkit-scrollbar-track { background: transparent; }
+  #messages::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+    animation: msgIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .msg.mine {
+    align-self: flex-end;
+    align-items: flex-end;
+  }
+
+  .msg.other {
+    align-self: flex-start;
+    align-items: flex-start;
+  }
+
+  .msg-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+
+  .msg.mine .msg-name { color: var(--accent2); }
+
+  .msg-bubble {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .msg.mine .msg-bubble {
+    background: var(--msg-mine);
+    border: 1px solid #00ff8830;
+    border-radius: 12px 12px 2px 12px;
+  }
+
+  .msg.other .msg-bubble {
+    background: var(--msg-other);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 12px 2px;
+  }
+
+  .msg-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* SYSTEM MSG */
+  .sys-msg {
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+    padding: 4px 0;
+  }
+
+  /* INPUT */
+  footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  #input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+    border-radius: 4px;
+  }
+
+  #input:focus { border-color: var(--accent); }
+  #input::placeholder { color: var(--muted); }
+
+  #send-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    width: 44px; height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: opacity 0.2s, transform 0.1s;
+    flex-shrink: 0;
+  }
+
+  #send-btn:hover { opacity: 0.85; }
+  #send-btn:active { transform: scale(0.93); }
+
+  #send-btn svg { width: 18px; height: 18px; }
+
+  /* TYPING */
+  .typing-indicator {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    padding: 0 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .typing-dots span {
+    display: inline-block;
+    width: 4px; height: 4px;
+    background: var(--muted);
+    border-radius: 50%;
+    animation: typingDot 1.2s infinite;
+  }
+
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typingDot {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
+    40% { transform: scale(1.2); opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Chat<span>X</span></div>
+    <div class="login-sub">// REALTIME MESSAGING</div>
+    <input type="text" id="username-input" placeholder="Masukkan nama kamu..." maxlength="20" />
+    <button class="login-btn" onclick="joinChat()">MASUK →</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="header-left">
+      <div class="logo">Chat<span>X</span></div>
+      <div class="room-badge" id="room-label"># GLOBAL</div>
+      <div class="online-count"><div class="dot"></div><span id="online-count">1 online</span></div>
+    </div>
+    <div class="user-info">logged as <strong id="display-username"></strong></div>
+  </header>
+
+  <div id="messages"></div>
+
+  <div class="typing-indicator" id="typing-indicator">
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+    <span id="typing-text"></span>
+  </div>
+
+  <footer>
+    <input type="text" id="input" placeholder="Ketik pesan..." maxlength="500" />
+    <button id="send-btn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </footer>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getDatabase, ref, push, onValue, serverTimestamp, onDisconnect, set, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+  // ⚠️ GANTI DENGAN FIREBASE CONFIG KAMU
+  // Cara dapat: https://console.firebase.google.com
+  // Buat project → Realtime Database → Rules: set read/write = true → ambil config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDUmhjXaatxyWoBK01sN3KtxvytCK52Z1s",
+    authDomain: "obanchat.firebaseapp.com",
+    databaseURL: "https://obanchat-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "obanchat",
+    storageBucket: "obanchat.firebasestorage.app",
+    messagingSenderId: "158148882391",
+    appId: "1:158148882391:web:63e188813ae68768e06592"
+  };
+
+  let app, db, messagesRef, typingRef, presenceRef;
+  let myUsername = '';
+  let myRoom = 'global';
+  let typingTimeout;
+
+  window.joinChat = function() {
+    const usernameInput = document.getElementById('username-input').value.trim();
+
+    if (!usernameInput) {
+      document.getElementById('username-input').style.borderColor = '#ff4466';
+      return;
+    }
+
+    myUsername = usernameInput;
+    myRoom = 'global';
+
+    try {
+      app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+    } catch(e) {
+      // Jika Firebase belum dikonfigurasi, gunakan mode demo lokal
+      startDemoMode();
+      return;
+    }
+
+    startFirebaseChat();
+  }
+
+  function startFirebaseChat() {
+    messagesRef = ref(db, `chatx/${myRoom}/messages`);
+    typingRef = ref(db, `chatx/${myRoom}/typing/${myUsername}`);
+    presenceRef = ref(db, `chatx/${myRoom}/presence/${myUsername}`);
+
+    // Show app
+    showApp();
+
+    // Set presence
+    set(presenceRef, true);
+    onDisconnect(presenceRef).remove();
+
+    // Listen messages
+    onValue(messagesRef, (snapshot) => {
+      const msgs = document.getElementById('messages');
+      msgs.innerHTML = '';
+      snapshot.forEach(child => {
+        const data = child.val();
+        if (data.system) {
+          addSystemMsg(data.text);
+        } else {
+          addMessage(data.username, data.text, data.username === myUsername, data.time);
+        }
+      });
+      msgs.scrollTop = msgs.scrollHeight;
+    });
+
+    // Listen typing
+    const typingAllRef = ref(db, `chatx/${myRoom}/typing`);
+    onValue(typingAllRef, (snapshot) => {
+      const typers = [];
+      snapshot.forEach(child => {
+        if (child.key !== myUsername) typers.push(child.key);
+      });
+      const ti = document.getElementById('typing-indicator');
+      if (typers.length > 0) {
+        ti.style.display = 'flex';
+        document.getElementById('typing-text').textContent = typers.join(', ') + ' sedang mengetik...';
+      } else {
+        ti.style.display = 'none';
+      }
+    });
+
+    // Listen presence
+    const presenceAllRef = ref(db, `chatx/${myRoom}/presence`);
+    onValue(presenceAllRef, (snapshot) => {
+      const count = snapshot.size || 1;
+      document.getElementById('online-count').textContent = count + ' online';
+    });
+
+    // Send join message
+    push(messagesRef, { system: true, text: `${myUsername} bergabung ke room` });
+
+    // Setup input
+    document.getElementById('input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { sendFirebaseMessage(); return; }
+      set(typingRef, true);
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => remove(typingRef), 2000);
+    });
+
+    window.sendMessage = sendFirebaseMessage;
+  }
+
+  function sendFirebaseMessage() {
+    const input = document.getElementById('input');
+    const text = input.value.trim();
+    if (!text) return;
+    push(messagesRef, {
+      username: myUsername,
+      text,
+      time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+    });
+    remove(typingRef);
+    clearTimeout(typingTimeout);
+    input.value = '';
+  }
+
+  // DEMO MODE (tanpa Firebase)
+  function startDemoMode() {
+    showApp();
+    const demoMessages = [
+      { username: 'System', text: '⚡ Mode Demo aktif. Firebase belum dikonfigurasi.', mine: false, time: 'sekarang' },
+      { username: 'Bot', text: 'Halo ' + myUsername + '! Ini mode demo, chat hanya terlihat di browser kamu.', mine: false, time: 'sekarang' },
+    ];
+    demoMessages.forEach(m => addMessage(m.username, m.text, m.mine, m.time));
+
+    document.getElementById('input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendDemoMessage();
+    });
+    window.sendMessage = sendDemoMessage;
+  }
+
+  function sendDemoMessage() {
+    const input = document.getElementById('input');
+    const text = input.value.trim();
+    if (!text) return;
+    const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    addMessage(myUsername, text, true, time);
+    input.value = '';
+    const msgs = document.getElementById('messages');
+    msgs.scrollTop = msgs.scrollHeight;
+
+    // Bot reply
+    setTimeout(() => {
+      const replies = ['Keren banget!', 'Haha iya bener', 'Wkwkwk 😂', 'Setuju!', 'Mantap jiwa'];
+      addMessage('Bot', replies[Math.floor(Math.random() * replies.length)], false, time);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1000 + Math.random() * 1000);
+  }
+
+  function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    const appEl = document.getElementById('app');
+    appEl.style.display = 'flex';
+    document.getElementById('display-username').textContent = myUsername;
+    document.getElementById('room-label').textContent = '# ' + myRoom.toUpperCase();
+  }
+
+  window.addMessage = function(username, text, mine, time) {
+    const msgs = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'msg ' + (mine ? 'mine' : 'other');
+    div.innerHTML = `
+      <div class="msg-name">${username}</div>
+      <div class="msg-bubble">${escapeHtml(text)}</div>
+      <div class="msg-time">${time || ''}</div>
+    `;
+    msgs.appendChild(div);
+  }
+
+  window.addSystemMsg = function(text) {
+    const msgs = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'sys-msg';
+    div.textContent = '— ' + text + ' —';
+    msgs.appendChild(div);
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+
+</body>
+</html>
