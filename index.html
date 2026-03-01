@@ -133,12 +133,6 @@
     padding: 3px 10px; letter-spacing: 1px;
   }
 
-  .admin-badge {
-    font-family: 'Space Mono', monospace; font-size: 0.65rem;
-    color: #ffaa00; background: #ffaa0015; border: 1px solid #ffaa0030;
-    padding: 3px 10px; letter-spacing: 1px;
-  }
-
   .online-count {
     font-family: 'Space Mono', monospace; font-size: 0.65rem;
     color: var(--muted); display: flex; align-items: center; gap: 6px;
@@ -151,12 +145,11 @@
     50% { opacity: 0.3; }
   }
 
-  .header-right { display: flex; align-items: center; gap: 12px; }
+  .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 
   .user-info { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); }
   .user-info strong { color: var(--accent2); }
 
-  /* TOMBOL HAPUS CHAT - hanya muncul untuk admin */
   #clear-btn {
     display: none;
     background: transparent;
@@ -171,6 +164,20 @@
   }
 
   #clear-btn:hover { background: var(--danger); color: #fff; }
+
+  #logout-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  #logout-btn:hover { border-color: var(--text); color: var(--text); }
 
   /* CONFIRM DIALOG */
   #confirm-overlay {
@@ -202,19 +209,11 @@
     background: var(--danger);
   }
 
-  .confirm-title {
-    font-size: 1.1rem;
-    font-weight: 800;
-    margin-bottom: 8px;
-    color: var(--danger);
-  }
+  .confirm-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; color: var(--danger); }
 
   .confirm-desc {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    margin-bottom: 24px;
-    line-height: 1.6;
+    font-family: 'Space Mono', monospace; font-size: 0.7rem;
+    color: var(--muted); margin-bottom: 24px; line-height: 1.6;
   }
 
   .confirm-btns { display: flex; gap: 10px; }
@@ -222,8 +221,7 @@
   .btn-cancel {
     flex: 1; padding: 10px; background: transparent;
     border: 1px solid var(--border); color: var(--muted);
-    font-family: 'Syne', sans-serif; font-weight: 700;
-    cursor: pointer; transition: all 0.2s;
+    font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s;
   }
 
   .btn-cancel:hover { border-color: var(--text); color: var(--text); }
@@ -231,8 +229,7 @@
   .btn-confirm-del {
     flex: 1; padding: 10px; background: var(--danger);
     border: none; color: #fff;
-    font-family: 'Syne', sans-serif; font-weight: 700;
-    cursor: pointer; transition: opacity 0.2s;
+    font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
   }
 
   .btn-confirm-del:hover { opacity: 0.85; }
@@ -368,6 +365,7 @@
     <div class="header-right">
       <button id="clear-btn" onclick="showConfirm()">🗑 HAPUS CHAT</button>
       <div class="user-info">logged as <strong id="display-username"></strong> <span id="admin-tag"></span></div>
+      <button id="logout-btn" onclick="doLogout()">LOGOUT</button>
     </div>
   </header>
 
@@ -394,6 +392,7 @@
   import { getDatabase, ref, push, onValue, set, get, remove, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
   const ADMIN_USERNAME = 'oban';
+  const SESSION_KEY = 'chatx_session';
 
   const firebaseConfig = {
     apiKey: "AIzaSyDUmhjXaatxyWoBK01sN3KtxvytCK52Z1s",
@@ -411,7 +410,13 @@
   let myUsername = '';
   let currentTab = 'login';
   let typingTimeout;
-  let messagesRef;
+
+  // CEK SESI — kalau sudah login sebelumnya, langsung masuk chat
+  const savedSession = sessionStorage.getItem(SESSION_KEY);
+  if (savedSession) {
+    myUsername = savedSession;
+    startChat();
+  }
 
   window.switchTab = function(tab) {
     currentTab = tab;
@@ -447,6 +452,7 @@
         }
         await set(userRef, { pin, createdAt: Date.now() });
         myUsername = username;
+        sessionStorage.setItem(SESSION_KEY, myUsername);
         startChat();
       } else {
         if (!snapshot.exists()) {
@@ -458,6 +464,7 @@
           btn.disabled = false; btn.textContent = 'MASUK →'; return;
         }
         myUsername = username;
+        sessionStorage.setItem(SESSION_KEY, myUsername);
         startChat();
       }
     } catch(e) {
@@ -470,7 +477,13 @@
   document.getElementById('pin-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') window.handleAuth(); });
   document.getElementById('username-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('pin-input').focus(); });
 
-  // CONFIRM DIALOG
+  // LOGOUT
+  window.doLogout = function() {
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+  }
+
+  // CONFIRM HAPUS CHAT
   window.showConfirm = () => { document.getElementById('confirm-overlay').className = 'show'; }
   window.closeConfirm = () => { document.getElementById('confirm-overlay').className = ''; }
   window.doDeleteAll = async () => {
@@ -480,16 +493,14 @@
   }
 
   function startChat() {
-    messagesRef = ref(db, 'chatx/global/messages');
+    const messagesRef = ref(db, 'chatx/global/messages');
     const typingRef = ref(db, `chatx/global/typing/${myUsername}`);
     const presenceRef = ref(db, `chatx/global/presence/${myUsername}`);
 
-    // Tampilkan app
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
     document.getElementById('display-username').textContent = myUsername;
 
-    // Kalau admin, tampilkan tombol hapus & badge
     if (myUsername === ADMIN_USERNAME) {
       document.getElementById('clear-btn').style.display = 'block';
       document.getElementById('admin-tag').innerHTML = '<span style="color:#ffaa00;font-size:0.6rem;">[ADMIN]</span>';
@@ -576,5 +587,6 @@
 
 </body>
 </html>
+
 
 
