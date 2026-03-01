@@ -41,7 +41,6 @@
     z-index: 0;
   }
 
-  /* LOGIN SCREEN */
   #login-screen {
     position: fixed;
     inset: 0;
@@ -55,7 +54,7 @@
   .login-box {
     background: var(--surface);
     border: 1px solid var(--border);
-    padding: 48px 40px;
+    padding: 40px 36px;
     width: 100%;
     max-width: 380px;
     position: relative;
@@ -82,25 +81,54 @@
     color: var(--muted);
     font-family: 'Space Mono', monospace;
     font-size: 0.7rem;
-    margin-bottom: 36px;
+    margin-bottom: 28px;
     letter-spacing: 2px;
   }
+
+  .tab-bar {
+    display: flex;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active { background: var(--accent); color: #000; }
+  .tab-btn.inactive { background: transparent; color: var(--muted); }
 
   .login-box input {
     width: 100%;
     background: var(--bg);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 14px 16px;
+    padding: 13px 16px;
     font-family: 'Syne', sans-serif;
     font-size: 1rem;
     outline: none;
     transition: border-color 0.2s;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .login-box input:focus { border-color: var(--accent); }
   .login-box input::placeholder { color: var(--muted); }
+
+  .error-msg {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: #ff4466;
+    margin-bottom: 10px;
+    min-height: 18px;
+  }
 
   .login-btn {
     width: 100%;
@@ -118,8 +146,8 @@
 
   .login-btn:hover { opacity: 0.85; }
   .login-btn:active { transform: scale(0.98); }
+  .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* CHAT APP */
   #app {
     display: none;
     flex-direction: column;
@@ -128,7 +156,6 @@
     z-index: 1;
   }
 
-  /* HEADER */
   header {
     padding: 16px 24px;
     border-bottom: 1px solid var(--border);
@@ -139,18 +166,9 @@
     flex-shrink: 0;
   }
 
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
 
-  .logo {
-    font-size: 1.4rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-  }
-
+  .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; }
   .logo span { color: var(--accent); }
 
   .room-badge {
@@ -192,7 +210,6 @@
 
   .user-info strong { color: var(--accent2); }
 
-  /* MESSAGES */
   #messages {
     flex: 1;
     overflow-y: auto;
@@ -219,15 +236,8 @@
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  .msg.mine {
-    align-self: flex-end;
-    align-items: flex-end;
-  }
-
-  .msg.other {
-    align-self: flex-start;
-    align-items: flex-start;
-  }
+  .msg.mine { align-self: flex-end; align-items: flex-end; }
+  .msg.other { align-self: flex-start; align-items: flex-start; }
 
   .msg-name {
     font-family: 'Space Mono', monospace;
@@ -243,7 +253,6 @@
     padding: 10px 16px;
     font-size: 0.95rem;
     line-height: 1.5;
-    position: relative;
   }
 
   .msg.mine .msg-bubble {
@@ -265,7 +274,6 @@
     margin-top: 4px;
   }
 
-  /* SYSTEM MSG */
   .sys-msg {
     text-align: center;
     font-family: 'Space Mono', monospace;
@@ -275,7 +283,6 @@
     padding: 4px 0;
   }
 
-  /* INPUT */
   footer {
     padding: 16px 24px;
     border-top: 1px solid var(--border);
@@ -318,10 +325,8 @@
 
   #send-btn:hover { opacity: 0.85; }
   #send-btn:active { transform: scale(0.93); }
-
   #send-btn svg { width: 18px; height: 18px; }
 
-  /* TYPING */
   .typing-indicator {
     display: none;
     align-items: center;
@@ -353,13 +358,21 @@
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- LOGIN / REGISTER -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">Chat<span>X</span></div>
     <div class="login-sub">// REALTIME MESSAGING</div>
-    <input type="text" id="username-input" placeholder="Masukkan nama kamu..." maxlength="20" />
-    <button class="login-btn" onclick="joinChat()">MASUK →</button>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">LOGIN</button>
+      <button class="tab-btn inactive" id="tab-register" onclick="switchTab('register')">REGISTER</button>
+    </div>
+
+    <input type="text" id="username-input" placeholder="Nama kamu..." maxlength="20" />
+    <input type="password" id="pin-input" placeholder="PIN 4 angka..." maxlength="4" inputmode="numeric" />
+    <div class="error-msg" id="error-msg"></div>
+    <button class="login-btn" id="action-btn" onclick="handleAuth()">MASUK →</button>
   </div>
 </div>
 
@@ -368,7 +381,7 @@
   <header>
     <div class="header-left">
       <div class="logo">Chat<span>X</span></div>
-      <div class="room-badge" id="room-label"># GLOBAL</div>
+      <div class="room-badge"># GLOBAL</div>
       <div class="online-count"><div class="dot"></div><span id="online-count">1 online</span></div>
     </div>
     <div class="user-info">logged as <strong id="display-username"></strong></div>
@@ -392,14 +405,10 @@
   </footer>
 </div>
 
-<!-- Firebase -->
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getDatabase, ref, push, onValue, serverTimestamp, onDisconnect, set, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+  import { getDatabase, ref, push, onValue, set, get, remove, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-  // ⚠️ GANTI DENGAN FIREBASE CONFIG KAMU
-  // Cara dapat: https://console.firebase.google.com
-  // Buat project → Realtime Database → Rules: set read/write = true → ambil config
   const firebaseConfig = {
     apiKey: "AIzaSyDUmhjXaatxyWoBK01sN3KtxvytCK52Z1s",
     authDomain: "obanchat.firebaseapp.com",
@@ -410,47 +419,101 @@
     appId: "1:158148882391:web:63e188813ae68768e06592"
   };
 
-  let app, db, messagesRef, typingRef, presenceRef;
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
   let myUsername = '';
-  let myRoom = 'global';
+  let currentTab = 'login';
   let typingTimeout;
 
-  window.joinChat = function() {
-    const usernameInput = document.getElementById('username-input').value.trim();
-
-    if (!usernameInput) {
-      document.getElementById('username-input').style.borderColor = '#ff4466';
-      return;
-    }
-
-    myUsername = usernameInput;
-    myRoom = 'global';
-
-    try {
-      app = initializeApp(firebaseConfig);
-      db = getDatabase(app);
-    } catch(e) {
-      // Jika Firebase belum dikonfigurasi, gunakan mode demo lokal
-      startDemoMode();
-      return;
-    }
-
-    startFirebaseChat();
+  window.switchTab = function(tab) {
+    currentTab = tab;
+    document.getElementById('tab-login').className = 'tab-btn ' + (tab === 'login' ? 'active' : 'inactive');
+    document.getElementById('tab-register').className = 'tab-btn ' + (tab === 'register' ? 'active' : 'inactive');
+    document.getElementById('action-btn').textContent = tab === 'login' ? 'MASUK →' : 'DAFTAR →';
+    document.getElementById('error-msg').textContent = '';
+    document.getElementById('username-input').value = '';
+    document.getElementById('pin-input').value = '';
   }
 
-  function startFirebaseChat() {
-    messagesRef = ref(db, `chatx/${myRoom}/messages`);
-    typingRef = ref(db, `chatx/${myRoom}/typing/${myUsername}`);
-    presenceRef = ref(db, `chatx/${myRoom}/presence/${myUsername}`);
+  window.handleAuth = async function() {
+    const username = document.getElementById('username-input').value.trim().toLowerCase();
+    const pin = document.getElementById('pin-input').value.trim();
+    const errEl = document.getElementById('error-msg');
+    const btn = document.getElementById('action-btn');
 
-    // Show app
-    showApp();
+    errEl.textContent = '';
 
-    // Set presence
+    if (!username) { errEl.textContent = '⚠ Nama tidak boleh kosong'; return; }
+    if (!/^\d{4}$/.test(pin)) { errEl.textContent = '⚠ PIN harus tepat 4 angka'; return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Loading...';
+
+    try {
+      const userRef = ref(db, `chatx/users/${username}`);
+      const snapshot = await get(userRef);
+
+      if (currentTab === 'register') {
+        if (snapshot.exists()) {
+          errEl.textContent = '⚠ Nama sudah digunakan, coba nama lain';
+          btn.disabled = false;
+          btn.textContent = 'DAFTAR →';
+          return;
+        }
+        await set(userRef, { pin, createdAt: Date.now() });
+        myUsername = username;
+        startChat();
+
+      } else {
+        if (!snapshot.exists()) {
+          errEl.textContent = '⚠ Nama tidak ditemukan, silakan register dulu';
+          btn.disabled = false;
+          btn.textContent = 'MASUK →';
+          return;
+        }
+        const data = snapshot.val();
+        if (data.pin !== pin) {
+          errEl.textContent = '⚠ PIN salah, coba lagi';
+          btn.disabled = false;
+          btn.textContent = 'MASUK →';
+          return;
+        }
+        myUsername = username;
+        startChat();
+      }
+    } catch(e) {
+      errEl.textContent = '⚠ Gagal terhubung ke server';
+      btn.disabled = false;
+      btn.textContent = currentTab === 'login' ? 'MASUK →' : 'DAFTAR →';
+    }
+  }
+
+  document.getElementById('pin-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') window.handleAuth();
+  });
+  document.getElementById('username-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('pin-input').focus();
+  });
+
+  function startChat() {
+    const messagesRef = ref(db, 'chatx/global/messages');
+    const typingRef = ref(db, `chatx/global/typing/${myUsername}`);
+    const presenceRef = ref(db, `chatx/global/presence/${myUsername}`);
+
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('display-username').textContent = myUsername;
+
     set(presenceRef, true);
     onDisconnect(presenceRef).remove();
 
-    // Listen messages
+    onValue(ref(db, 'chatx/global/presence'), (snap) => {
+      let count = 0;
+      snap.forEach(() => count++);
+      document.getElementById('online-count').textContent = count + ' online';
+    });
+
     onValue(messagesRef, (snapshot) => {
       const msgs = document.getElementById('messages');
       msgs.innerHTML = '';
@@ -465,9 +528,7 @@
       msgs.scrollTop = msgs.scrollHeight;
     });
 
-    // Listen typing
-    const typingAllRef = ref(db, `chatx/${myRoom}/typing`);
-    onValue(typingAllRef, (snapshot) => {
+    onValue(ref(db, 'chatx/global/typing'), (snapshot) => {
       const typers = [];
       snapshot.forEach(child => {
         if (child.key !== myUsername) typers.push(child.key);
@@ -481,83 +542,33 @@
       }
     });
 
-    // Listen presence
-    const presenceAllRef = ref(db, `chatx/${myRoom}/presence`);
-    onValue(presenceAllRef, (snapshot) => {
-      const count = snapshot.size || 1;
-      document.getElementById('online-count').textContent = count + ' online';
-    });
+    push(messagesRef, { system: true, text: `${myUsername} bergabung ke chat` });
 
-    // Send join message
-    push(messagesRef, { system: true, text: `${myUsername} bergabung ke room` });
-
-    // Setup input
     document.getElementById('input').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { sendFirebaseMessage(); return; }
+      if (e.key === 'Enter') { sendMsg(); return; }
       set(typingRef, true);
       clearTimeout(typingTimeout);
       typingTimeout = setTimeout(() => remove(typingRef), 2000);
     });
 
-    window.sendMessage = sendFirebaseMessage;
+    window.sendMessage = sendMsg;
+
+    function sendMsg() {
+      const input = document.getElementById('input');
+      const text = input.value.trim();
+      if (!text) return;
+      push(messagesRef, {
+        username: myUsername,
+        text,
+        time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+      });
+      remove(typingRef);
+      clearTimeout(typingTimeout);
+      input.value = '';
+    }
   }
 
-  function sendFirebaseMessage() {
-    const input = document.getElementById('input');
-    const text = input.value.trim();
-    if (!text) return;
-    push(messagesRef, {
-      username: myUsername,
-      text,
-      time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-    });
-    remove(typingRef);
-    clearTimeout(typingTimeout);
-    input.value = '';
-  }
-
-  // DEMO MODE (tanpa Firebase)
-  function startDemoMode() {
-    showApp();
-    const demoMessages = [
-      { username: 'System', text: '⚡ Mode Demo aktif. Firebase belum dikonfigurasi.', mine: false, time: 'sekarang' },
-      { username: 'Bot', text: 'Halo ' + myUsername + '! Ini mode demo, chat hanya terlihat di browser kamu.', mine: false, time: 'sekarang' },
-    ];
-    demoMessages.forEach(m => addMessage(m.username, m.text, m.mine, m.time));
-
-    document.getElementById('input').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') sendDemoMessage();
-    });
-    window.sendMessage = sendDemoMessage;
-  }
-
-  function sendDemoMessage() {
-    const input = document.getElementById('input');
-    const text = input.value.trim();
-    if (!text) return;
-    const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-    addMessage(myUsername, text, true, time);
-    input.value = '';
-    const msgs = document.getElementById('messages');
-    msgs.scrollTop = msgs.scrollHeight;
-
-    // Bot reply
-    setTimeout(() => {
-      const replies = ['Keren banget!', 'Haha iya bener', 'Wkwkwk 😂', 'Setuju!', 'Mantap jiwa'];
-      addMessage('Bot', replies[Math.floor(Math.random() * replies.length)], false, time);
-      msgs.scrollTop = msgs.scrollHeight;
-    }, 1000 + Math.random() * 1000);
-  }
-
-  function showApp() {
-    document.getElementById('login-screen').style.display = 'none';
-    const appEl = document.getElementById('app');
-    appEl.style.display = 'flex';
-    document.getElementById('display-username').textContent = myUsername;
-    document.getElementById('room-label').textContent = '# ' + myRoom.toUpperCase();
-  }
-
-  window.addMessage = function(username, text, mine, time) {
+  function addMessage(username, text, mine, time) {
     const msgs = document.getElementById('messages');
     const div = document.createElement('div');
     div.className = 'msg ' + (mine ? 'mine' : 'other');
@@ -569,7 +580,7 @@
     msgs.appendChild(div);
   }
 
-  window.addSystemMsg = function(text) {
+  function addSystemMsg(text) {
     const msgs = document.getElementById('messages');
     const div = document.createElement('div');
     div.className = 'sys-msg';
@@ -584,3 +595,4 @@
 
 </body>
 </html>
+
