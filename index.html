@@ -116,7 +116,7 @@
   @keyframes msgIn { from { opacity: 0; transform: translateY(10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
   .msg.mine { align-self: flex-end; align-items: flex-end; }
   .msg.other { align-self: flex-start; align-items: flex-start; }
-  .msg-name { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-bottom: 4px; letter-spacing: 1px; }
+  .msg-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.5px; }
   .msg.mine .msg-name { color: var(--accent2); }
 
   /* REPLY PREVIEW di dalam bubble */
@@ -551,7 +551,7 @@
     // Reply preview
     let replyHTML = '';
     if (replyTo) {
-      replyHTML = `<div class="reply-preview"><strong>${escapeHtml(replyTo.username)}</strong>: ${escapeHtml((replyTo.text || '').substring(0, 60))}</div>`;
+      replyHTML = `<div class="reply-preview"><strong style="color:${getUserColor(replyTo.username)}">${escapeHtml(replyTo.username)}</strong>: ${escapeHtml((replyTo.text || '').substring(0, 60))}</div>`;
     }
 
     // Content (gambar atau teks)
@@ -567,7 +567,7 @@
     const replyBtn = `<button class="msg-action-btn" onclick="setReply('${msgId}', '${escapeHtml(username)}', '${escapeHtml((text || '').replace(/'/g, "\\'"))}')" title="Balas">↩</button>`;
 
     div.innerHTML = `
-      <div class="msg-name">${escapeHtml(username)}</div>
+      <div class="msg-name" style="color: ${getUserColor(username)}">${escapeHtml(username)}</div>
       <div class="msg-bubble">${replyHTML}${contentHTML}</div>
       <div class="msg-time">${time || ''}</div>
       <div class="msg-actions">${mine ? deleteBtn + replyBtn : replyBtn + deleteBtn}</div>
@@ -587,6 +587,22 @@
   window.openLightbox = function(url) {
     document.getElementById('lightbox-img').src = url;
     document.getElementById('lightbox').className = 'show';
+  }
+
+  // Warna-warni nama user seperti grup WA
+  const NAME_COLORS = [
+    '#ff6b6b', '#ffa94d', '#ffe066', '#69db7c', '#38d9a9',
+    '#4dabf7', '#748ffc', '#da77f2', '#f783ac', '#63e6be',
+    '#ff8787', '#ffd43b', '#a9e34b', '#74c0fc', '#e599f7'
+  ];
+
+  function getUserColor(username) {
+    if (username === myUsername) return 'var(--accent2)';
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) {
+      hash = username.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return NAME_COLORS[Math.abs(hash) % NAME_COLORS.length];
   }
 
   function escapeHtml(text) {
@@ -678,6 +694,7 @@
 
 </body>
 </html>
+
 
 
 
