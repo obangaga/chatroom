@@ -118,6 +118,7 @@
   #app { display: none; flex-direction: column; height: 100vh; position: relative; z-index: 1; }
 
   header {
+    flex-wrap: wrap; gap: 8px;
     padding: 16px 24px; border-bottom: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
     background: var(--surface); flex-shrink: 0;
@@ -337,6 +338,24 @@
   @keyframes typingDot {
     0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
     40% { transform: scale(1.2); opacity: 1; }
+  }
+  /* ===== RESPONSIVE MOBILE ===== */
+  @media (max-width: 600px) {
+    header { padding: 10px 14px; }
+    .logo { font-size: 1rem; }
+    .room-badge { display: none; }
+    .online-count { font-size: 0.6rem; }
+    .user-info { font-size: 0.6rem; }
+    .header-right { gap: 6px; }
+    #logout-btn { padding: 5px 8px; font-size: 0.6rem; }
+    #clear-btn { padding: 5px 8px; font-size: 0.6rem; }
+    #admin-tag { display: none; }
+    footer { padding: 10px 12px; gap: 8px; }
+    #input { padding: 10px 12px; font-size: 0.9rem; }
+    #send-btn, #calc-btn { width: 40px; height: 40px; }
+    #messages { padding: 16px 14px; }
+    .msg { max-width: 85%; }
+    .login-box { padding: 30px 24px; }
   }
 </style>
 </head>
@@ -740,6 +759,7 @@
 
 </body>
 </html>
+
 
 
 
