@@ -22,324 +22,187 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: 'Syne', sans-serif;
     height: 100vh; height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    display: flex; flex-direction: column; overflow: hidden;
   }
 
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse 80% 50% at 20% 0%, #00ff8808 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 100%, #00aaff08 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
+    content: ''; position: fixed; inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 20% 0%, #00ff8808 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 100%, #00aaff08 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
   }
 
+  /* LOGIN */
   #login-screen {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    background: var(--bg);
+    position: fixed; inset: 0; display: flex;
+    align-items: center; justify-content: center; z-index: 100; background: var(--bg);
   }
 
   .login-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 40px 36px;
-    width: 100%;
-    max-width: 380px;
-    position: relative;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 40px 36px; width: 100%; max-width: 380px; position: relative;
   }
 
   .login-box::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
   }
 
   .login-logo { font-size: 2.5rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 4px; }
   .login-logo span { color: var(--accent); }
-
-  .login-sub {
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    margin-bottom: 28px;
-    letter-spacing: 2px;
-  }
-
+  .login-sub { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 0.7rem; margin-bottom: 28px; letter-spacing: 2px; }
   .tab-bar { display: flex; margin-bottom: 20px; border: 1px solid var(--border); }
-
-  .tab-btn {
-    flex: 1; padding: 10px; border: none;
-    font-family: 'Syne', sans-serif; font-weight: 700;
-    cursor: pointer; font-size: 0.85rem; letter-spacing: 1px; transition: all 0.2s;
-  }
-
+  .tab-btn { flex: 1; padding: 10px; border: none; font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; font-size: 0.85rem; letter-spacing: 1px; transition: all 0.2s; }
   .tab-btn.active { background: var(--accent); color: #000; }
   .tab-btn.inactive { background: transparent; color: var(--muted); }
-
-  .login-box input {
-    width: 100%; background: var(--bg); border: 1px solid var(--border);
-    color: var(--text); padding: 13px 16px; font-family: 'Syne', sans-serif;
-    font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 10px;
-  }
-
+  .login-box input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 13px 16px; font-family: 'Syne', sans-serif; font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 10px; }
   .login-box input:focus { border-color: var(--accent); }
   .login-box input::placeholder { color: var(--muted); }
-
-  .error-msg {
-    font-family: 'Space Mono', monospace; font-size: 0.68rem;
-    color: var(--danger); margin-bottom: 10px; min-height: 18px;
-  }
-
-  .login-btn {
-    width: 100%; background: var(--accent); color: #000; border: none;
-    padding: 14px; font-family: 'Syne', sans-serif; font-size: 1rem;
-    font-weight: 700; cursor: pointer; letter-spacing: 1px; transition: opacity 0.2s, transform 0.1s;
-  }
-
+  .error-msg { font-family: 'Space Mono', monospace; font-size: 0.68rem; color: var(--danger); margin-bottom: 10px; min-height: 18px; }
+  .login-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 14px; font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; letter-spacing: 1px; transition: opacity 0.2s, transform 0.1s; }
   .login-btn:hover { opacity: 0.85; }
   .login-btn:active { transform: scale(0.98); }
   .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+  /* APP */
   #app { display: none; flex-direction: column; height: 100vh; height: 100dvh; position: relative; z-index: 1; }
 
   header {
-    flex-wrap: wrap; gap: 8px;
-    padding: 16px 24px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px; padding: 16px 24px;
+    border-bottom: 1px solid var(--border); display: flex;
+    align-items: center; justify-content: space-between;
     background: var(--surface); flex-shrink: 0;
   }
 
   .header-left { display: flex; align-items: center; gap: 12px; }
   .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; }
   .logo span { color: var(--accent); }
-
-  .room-badge {
-    font-family: 'Space Mono', monospace; font-size: 0.65rem;
-    color: var(--accent); background: #00ff8815; border: 1px solid #00ff8830;
-    padding: 3px 10px; letter-spacing: 1px;
-  }
-
-  .online-count {
-    font-family: 'Space Mono', monospace; font-size: 0.65rem;
-    color: var(--muted); display: flex; align-items: center; gap: 6px;
-  }
-
-  .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
+  .room-badge { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--accent); background: #00ff8815; border: 1px solid #00ff8830; padding: 3px 10px; letter-spacing: 1px; }
+  .online-count { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: blink 2s infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
   .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-
   .user-info { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); }
   .user-info strong { color: var(--accent2); }
 
-  #clear-btn {
-    display: none;
-    background: transparent;
-    border: 1px solid var(--danger);
-    color: var(--danger);
-    padding: 6px 14px;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.2s;
-  }
-
+  #clear-btn { display: none; background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 6px 14px; font-family: 'Space Mono', monospace; font-size: 0.65rem; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
   #clear-btn:hover { background: var(--danger); color: #fff; }
-
-  #logout-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 6px 14px;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.2s;
-  }
-
+  #logout-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; font-family: 'Space Mono', monospace; font-size: 0.65rem; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; }
   #logout-btn:hover { border-color: var(--text); color: var(--text); }
 
   /* CONFIRM DIALOG */
-  #confirm-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: #00000080;
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-  }
-
+  #confirm-overlay { display: none; position: fixed; inset: 0; background: #00000080; z-index: 200; align-items: center; justify-content: center; }
   #confirm-overlay.show { display: flex; }
-
-  .confirm-box {
-    background: var(--surface);
-    border: 1px solid var(--danger);
-    padding: 32px;
-    max-width: 320px;
-    width: 90%;
-    position: relative;
-  }
-
-  .confirm-box::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--danger);
-  }
-
+  .confirm-box { background: var(--surface); border: 1px solid var(--danger); padding: 32px; max-width: 320px; width: 90%; position: relative; }
+  .confirm-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--danger); }
   .confirm-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; color: var(--danger); }
-
-  .confirm-desc {
-    font-family: 'Space Mono', monospace; font-size: 0.7rem;
-    color: var(--muted); margin-bottom: 24px; line-height: 1.6;
-  }
-
+  .confirm-desc { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
   .confirm-btns { display: flex; gap: 10px; }
-
-  .btn-cancel {
-    flex: 1; padding: 10px; background: transparent;
-    border: 1px solid var(--border); color: var(--muted);
-    font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s;
-  }
-
+  .btn-cancel { flex: 1; padding: 10px; background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s; }
   .btn-cancel:hover { border-color: var(--text); color: var(--text); }
-
-  .btn-confirm-del {
-    flex: 1; padding: 10px; background: var(--danger);
-    border: none; color: #fff;
-    font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
-  }
-
+  .btn-confirm-del { flex: 1; padding: 10px; background: var(--danger); border: none; color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
   .btn-confirm-del:hover { opacity: 0.85; }
 
-  #messages {
-    flex: 1; overflow-y: auto; padding: 24px;
-    display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;
-  }
-
+  /* MESSAGES */
+  #messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
   #messages::-webkit-scrollbar { width: 4px; }
   #messages::-webkit-scrollbar-track { background: transparent; }
   #messages::-webkit-scrollbar-thumb { background: var(--border); }
 
-  .msg {
-    display: flex; flex-direction: column; max-width: 70%;
-    animation: msgIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(10px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
+  .msg { display: flex; flex-direction: column; max-width: 70%; animation: msgIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
   .msg.mine { align-self: flex-end; align-items: flex-end; }
   .msg.other { align-self: flex-start; align-items: flex-start; }
-
   .msg-name { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); margin-bottom: 4px; letter-spacing: 1px; }
   .msg.mine .msg-name { color: var(--accent2); }
 
+  /* REPLY PREVIEW di dalam bubble */
+  .reply-preview {
+    background: #ffffff10; border-left: 2px solid var(--accent2);
+    padding: 6px 10px; margin-bottom: 6px; border-radius: 4px;
+    font-size: 0.75rem; color: var(--muted); max-width: 100%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .reply-preview strong { color: var(--accent2); }
+
   .msg-bubble { padding: 10px 16px; font-size: 0.95rem; line-height: 1.5; }
+  .msg.mine .msg-bubble { background: var(--msg-mine); border: 1px solid #00ff8830; border-radius: 12px 12px 2px 12px; }
+  .msg.other .msg-bubble { background: var(--msg-other); border: 1px solid var(--border); border-radius: 12px 12px 12px 2px; }
 
-  .msg.mine .msg-bubble {
-    background: var(--msg-mine); border: 1px solid #00ff8830;
-    border-radius: 12px 12px 2px 12px;
-  }
-
-  .msg.other .msg-bubble {
-    background: var(--msg-other); border: 1px solid var(--border);
-    border-radius: 12px 12px 12px 2px;
-  }
+  /* MSG IMAGE */
+  .msg-bubble img { max-width: 220px; max-height: 220px; border-radius: 8px; display: block; cursor: pointer; }
 
   .msg-time { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); margin-top: 4px; }
 
-  .sys-msg {
-    text-align: center; font-family: 'Space Mono', monospace;
-    font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; padding: 4px 0;
+  /* MSG ACTIONS (reply + delete) */
+  .msg-actions {
+    display: none; position: absolute; top: 0;
+    gap: 4px; z-index: 10;
   }
+  .msg.mine .msg-actions { left: -70px; flex-direction: row; }
+  .msg.other .msg-actions { right: -70px; flex-direction: row; }
+  .msg:hover .msg-actions { display: flex; }
 
-  footer {
-    padding: 16px 24px; border-top: 1px solid var(--border);
-    background: var(--surface); display: flex; gap: 12px; align-items: center; flex-shrink: 0;
+  .msg-action-btn {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); width: 28px; height: 28px; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; transition: all 0.2s;
   }
+  .msg-action-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .msg-action-btn.delete:hover { border-color: var(--danger); color: var(--danger); }
 
-  #input {
-    flex: 1; background: var(--bg); border: 1px solid var(--border);
-    color: var(--text); padding: 12px 16px; font-family: 'Syne', sans-serif;
-    font-size: 0.95rem; outline: none; transition: border-color 0.2s; border-radius: 4px; resize: none; overflow-y: auto; min-height: 44px; max-height: 200px; line-height: 1.5;
+  /* REPLY BAR di atas input */
+  #reply-bar {
+    display: none; padding: 8px 16px; background: var(--surface);
+    border-top: 1px solid var(--border); align-items: center; gap: 10px;
+    font-family: 'Space Mono', monospace; font-size: 0.7rem; flex-shrink: 0;
   }
+  #reply-bar.show { display: flex; }
+  #reply-bar-text { flex: 1; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #reply-bar-text strong { color: var(--accent2); }
+  #reply-close { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1rem; padding: 0; }
 
+  .sys-msg { text-align: center; font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; padding: 4px 0; }
+
+  /* FOOTER */
+  footer { padding: 16px 24px; border-top: 1px solid var(--border); background: var(--surface); display: flex; gap: 12px; align-items: flex-end; flex-shrink: 0; }
+
+  #input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px 16px; font-family: 'Syne', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s; border-radius: 4px; resize: none; overflow-y: auto; min-height: 44px; max-height: 200px; line-height: 1.5; }
   #input:focus { border-color: var(--accent); }
   #input::placeholder { color: var(--muted); }
 
-  #send-btn {
-    background: var(--accent); color: #000; border: none;
-    width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; border-radius: 4px; transition: opacity 0.2s, transform 0.1s; flex-shrink: 0;
-  }
-
+  #send-btn { background: var(--accent); color: #000; border: none; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; transition: opacity 0.2s, transform 0.1s; flex-shrink: 0; }
   #send-btn:hover { opacity: 0.85; }
   #send-btn:active { transform: scale(0.93); }
   #send-btn svg { width: 18px; height: 18px; }
 
-  #calc-btn {
-    background: var(--surface);
-    color: var(--accent2);
-    border: 1px solid var(--border);
-    width: 44px; height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-
+  #calc-btn { background: var(--surface); color: var(--accent2); border: 1px solid var(--border); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
   #calc-btn:hover { border-color: var(--accent2); background: #00aaff15; }
   #calc-btn:active { transform: scale(0.93); }
   #calc-btn svg { width: 18px; height: 18px; }
 
-  .typing-indicator {
-    display: none; align-items: center; gap: 6px; padding: 0 24px;
-    font-family: 'Space Mono', monospace; font-size: 0.65rem;
-    color: var(--muted); height: 24px; flex-shrink: 0;
-  }
+  /* TOMBOL GAMBAR */
+  #img-btn { background: var(--surface); color: var(--muted); border: 1px solid var(--border); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
+  #img-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #img-input { display: none; }
 
-  .typing-dots span {
-    display: inline-block; width: 4px; height: 4px;
-    background: var(--muted); border-radius: 50%; animation: typingDot 1.2s infinite;
-  }
-
+  /* TYPING */
+  .typing-indicator { display: none; align-items: center; gap: 6px; padding: 0 24px; font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); height: 24px; flex-shrink: 0; }
+  .typing-dots span { display: inline-block; width: 4px; height: 4px; background: var(--muted); border-radius: 50%; animation: typingDot 1.2s infinite; }
   .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
   .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingDot { 0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; } 40% { transform: scale(1.2); opacity: 1; } }
 
-  @keyframes typingDot {
-    0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
-    40% { transform: scale(1.2); opacity: 1; }
-  }
-  /* ===== RESPONSIVE MOBILE ===== */
+  /* IMAGE LIGHTBOX */
+  #lightbox { display: none; position: fixed; inset: 0; background: #000000cc; z-index: 999; align-items: center; justify-content: center; }
+  #lightbox.show { display: flex; }
+  #lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
+
+  /* RESPONSIVE MOBILE */
   @media (max-width: 600px) {
     header { padding: 10px 14px; }
     .logo { font-size: 1rem; }
@@ -352,9 +215,11 @@
     #admin-tag { display: none; }
     footer { padding: 10px 12px; gap: 8px; }
     #input { padding: 10px 12px; font-size: 0.9rem; }
-    #send-btn, #calc-btn { width: 40px; height: 40px; }
+    #send-btn, #calc-btn, #img-btn { width: 40px; height: 40px; }
     #messages { padding: 16px 14px; }
     .msg { max-width: 85%; }
+    .msg.mine .msg-actions { left: -60px; }
+    .msg.other .msg-actions { right: -60px; }
     .login-box { padding: 30px 24px; }
   }
 </style>
@@ -366,12 +231,10 @@
   <div class="login-box">
     <div class="login-logo">Oban <span>Chat</span></div>
     <div class="login-sub">// REALTIME MESSAGING</div>
-
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">LOGIN</button>
       <button class="tab-btn inactive" id="tab-register" onclick="switchTab('register')">REGISTER</button>
     </div>
-
     <input type="text" id="username-input" placeholder="Nama kamu..." maxlength="20" />
     <input type="password" id="pin-input" placeholder="PIN 4 angka..." maxlength="4" inputmode="numeric" />
     <div class="error-msg" id="error-msg"></div>
@@ -379,7 +242,7 @@
   </div>
 </div>
 
-<!-- CONFIRM DIALOG -->
+<!-- CONFIRM HAPUS SEMUA -->
 <div id="confirm-overlay">
   <div class="confirm-box">
     <div class="confirm-title">⚠ Hapus Semua Chat?</div>
@@ -389,6 +252,11 @@
       <button class="btn-confirm-del" onclick="doDeleteAll()">HAPUS SEMUA</button>
     </div>
   </div>
+</div>
+
+<!-- IMAGE LIGHTBOX -->
+<div id="lightbox" onclick="document.getElementById('lightbox').className=''">
+  <img id="lightbox-img" src="" />
 </div>
 
 <!-- APP -->
@@ -413,24 +281,34 @@
     <span id="typing-text"></span>
   </div>
 
+  <!-- REPLY BAR -->
+  <div id="reply-bar">
+    <div id="reply-bar-text"></div>
+    <button id="reply-close" onclick="cancelReply()">✕</button>
+  </div>
+
   <footer>
     <textarea id="input" placeholder="Ketik pesan atau paste data..." rows="1"></textarea>
-    <button id="send-btn" onclick="sendMessage()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="22" y1="2" x2="11" y2="13"></line>
-        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+    <input type="file" id="img-input" accept="image/*" />
+    <button id="img-btn" onclick="document.getElementById('img-input').click()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
       </svg>
     </button>
     <button id="calc-btn" onclick="hitungData()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="4" y="2" width="16" height="20" rx="2"></rect>
         <line x1="8" y1="6" x2="16" y2="6"></line>
-        <line x1="8" y1="10" x2="10" y2="10"></line>
-        <line x1="14" y1="10" x2="16" y2="10"></line>
-        <line x1="8" y1="14" x2="10" y2="14"></line>
-        <line x1="14" y1="14" x2="16" y2="14"></line>
-        <line x1="8" y1="18" x2="10" y2="18"></line>
-        <line x1="14" y1="18" x2="16" y2="18"></line>
+        <line x1="8" y1="10" x2="10" y2="10"></line><line x1="14" y1="10" x2="16" y2="10"></line>
+        <line x1="8" y1="14" x2="10" y2="14"></line><line x1="14" y1="14" x2="16" y2="14"></line>
+        <line x1="8" y1="18" x2="10" y2="18"></line><line x1="14" y1="18" x2="16" y2="18"></line>
+      </svg>
+    </button>
+    <button id="send-btn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
       </svg>
     </button>
   </footer>
@@ -439,6 +317,7 @@
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getDatabase, ref, push, onValue, set, get, remove, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+  import { getStorage, ref as sref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
   const ADMIN_USERNAME = 'oban';
   const SESSION_KEY = 'chatx_session';
@@ -455,18 +334,19 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+  const storage = getStorage(app);
 
   let myUsername = '';
   let currentTab = 'login';
   let typingTimeout;
+  let replyTo = null; // { msgId, username, text }
+  let isAdmin = false;
 
-  // CEK SESI — kalau sudah login sebelumnya, langsung masuk chat
+  // CEK SESI
   const savedSession = sessionStorage.getItem(SESSION_KEY);
-  if (savedSession) {
-    myUsername = savedSession;
-    startChat();
-  }
+  if (savedSession) { myUsername = savedSession; startChat(); }
 
+  // TAB SWITCH
   window.switchTab = function(tab) {
     currentTab = tab;
     document.getElementById('tab-login').className = 'tab-btn ' + (tab === 'login' ? 'active' : 'inactive');
@@ -477,49 +357,31 @@
     document.getElementById('pin-input').value = '';
   }
 
+  // AUTH
   window.handleAuth = async function() {
     const username = document.getElementById('username-input').value.trim().toLowerCase();
     const pin = document.getElementById('pin-input').value.trim();
     const errEl = document.getElementById('error-msg');
     const btn = document.getElementById('action-btn');
-
     errEl.textContent = '';
     if (!username) { errEl.textContent = '⚠ Nama tidak boleh kosong'; return; }
     if (!/^\d{4}$/.test(pin)) { errEl.textContent = '⚠ PIN harus tepat 4 angka'; return; }
-
-    btn.disabled = true;
-    btn.textContent = 'Loading...';
-
+    btn.disabled = true; btn.textContent = 'Loading...';
     try {
       const userRef = ref(db, `chatx/users/${username}`);
       const snapshot = await get(userRef);
-
       if (currentTab === 'register') {
-        if (snapshot.exists()) {
-          errEl.textContent = '⚠ Nama sudah digunakan, coba nama lain';
-          btn.disabled = false; btn.textContent = 'DAFTAR →'; return;
-        }
+        if (snapshot.exists()) { errEl.textContent = '⚠ Nama sudah digunakan'; btn.disabled = false; btn.textContent = 'DAFTAR →'; return; }
         await set(userRef, { pin, createdAt: Date.now() });
-        myUsername = username;
-        sessionStorage.setItem(SESSION_KEY, myUsername);
-        startChat();
+        myUsername = username; sessionStorage.setItem(SESSION_KEY, myUsername); startChat();
       } else {
-        if (!snapshot.exists()) {
-          errEl.textContent = '⚠ Nama tidak ditemukan, silakan register dulu';
-          btn.disabled = false; btn.textContent = 'MASUK →'; return;
-        }
-        if (snapshot.val().pin !== pin) {
-          errEl.textContent = '⚠ PIN salah, coba lagi';
-          btn.disabled = false; btn.textContent = 'MASUK →'; return;
-        }
-        myUsername = username;
-        sessionStorage.setItem(SESSION_KEY, myUsername);
-        startChat();
+        if (!snapshot.exists()) { errEl.textContent = '⚠ Nama tidak ditemukan, silakan register'; btn.disabled = false; btn.textContent = 'MASUK →'; return; }
+        if (snapshot.val().pin !== pin) { errEl.textContent = '⚠ PIN salah'; btn.disabled = false; btn.textContent = 'MASUK →'; return; }
+        myUsername = username; sessionStorage.setItem(SESSION_KEY, myUsername); startChat();
       }
     } catch(e) {
       errEl.textContent = '⚠ Gagal terhubung ke server';
-      btn.disabled = false;
-      btn.textContent = currentTab === 'login' ? 'MASUK →' : 'DAFTAR →';
+      btn.disabled = false; btn.textContent = currentTab === 'login' ? 'MASUK →' : 'DAFTAR →';
     }
   }
 
@@ -527,12 +389,9 @@
   document.getElementById('username-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('pin-input').focus(); });
 
   // LOGOUT
-  window.doLogout = function() {
-    sessionStorage.removeItem(SESSION_KEY);
-    location.reload();
-  }
+  window.doLogout = function() { sessionStorage.removeItem(SESSION_KEY); location.reload(); }
 
-  // CONFIRM HAPUS CHAT
+  // HAPUS SEMUA
   window.showConfirm = () => { document.getElementById('confirm-overlay').className = 'show'; }
   window.closeConfirm = () => { document.getElementById('confirm-overlay').className = ''; }
   window.doDeleteAll = async () => {
@@ -541,16 +400,39 @@
     closeConfirm();
   }
 
+  // REPLY
+  window.setReply = function(msgId, username, text) {
+    replyTo = { msgId, username, text };
+    const bar = document.getElementById('reply-bar');
+    bar.className = 'show';
+    document.getElementById('reply-bar-text').innerHTML = `Membalas <strong>${username}</strong>: ${escapeHtml(text.substring(0, 60))}${text.length > 60 ? '...' : ''}`;
+    document.getElementById('input').focus();
+  }
+
+  window.cancelReply = function() {
+    replyTo = null;
+    document.getElementById('reply-bar').className = '';
+  }
+
+  // HAPUS 1 PESAN (admin only)
+  window.deleteMsg = async function(msgId) {
+    if (!isAdmin) return;
+    await remove(ref(db, `chatx/global/messages/${msgId}`));
+  }
+
+  // MAIN CHAT
   function startChat() {
     const messagesRef = ref(db, 'chatx/global/messages');
     const typingRef = ref(db, `chatx/global/typing/${myUsername}`);
     const presenceRef = ref(db, `chatx/global/presence/${myUsername}`);
 
+    isAdmin = myUsername === ADMIN_USERNAME;
+
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
     document.getElementById('display-username').textContent = myUsername;
 
-    if (myUsername === ADMIN_USERNAME) {
+    if (isAdmin) {
       document.getElementById('clear-btn').style.display = 'block';
       document.getElementById('admin-tag').innerHTML = '<span style="color:#ffaa00;font-size:0.6rem;">[ADMIN]</span>';
     }
@@ -568,8 +450,9 @@
       msgs.innerHTML = '';
       snapshot.forEach(child => {
         const data = child.val();
+        const msgId = child.key;
         if (data.system) addSystemMsg(data.text);
-        else addMessage(data.username, data.text, data.username === myUsername, data.time);
+        else addMessage(msgId, data.username, data.text, data.username === myUsername, data.time, data.replyTo, data.imageUrl);
       });
       msgs.scrollTop = msgs.scrollHeight;
     });
@@ -578,31 +461,21 @@
       const typers = [];
       snapshot.forEach(child => { if (child.key !== myUsername) typers.push(child.key); });
       const ti = document.getElementById('typing-indicator');
-      if (typers.length > 0) {
-        ti.style.display = 'flex';
-        document.getElementById('typing-text').textContent = typers.join(', ') + ' sedang mengetik...';
-      } else { ti.style.display = 'none'; }
+      if (typers.length > 0) { ti.style.display = 'flex'; document.getElementById('typing-text').textContent = typers.join(', ') + ' sedang mengetik...'; }
+      else { ti.style.display = 'none'; }
     });
 
-    push(messagesRef, { system: true, text: `${myUsername} bergabung ke chat` });
+    // TIDAK ada notif bergabung — dihapus sesuai permintaan
 
     const inputEl = document.getElementById('input');
-    // Auto resize textarea
     inputEl.addEventListener('input', () => {
-      // Nonaktifkan tombol kirim jika teks > 100 karakter
       const sendBtn = document.getElementById('send-btn');
-      if (inputEl.value.length > 100) {
-        sendBtn.disabled = true;
-        sendBtn.style.opacity = '0.3';
-        sendBtn.style.cursor = 'not-allowed';
-      } else {
-        sendBtn.disabled = false;
-        sendBtn.style.opacity = '1';
-        sendBtn.style.cursor = 'pointer';
-      }
+      if (inputEl.value.length > 100) { sendBtn.disabled = true; sendBtn.style.opacity = '0.3'; sendBtn.style.cursor = 'not-allowed'; }
+      else { sendBtn.disabled = false; sendBtn.style.opacity = '1'; sendBtn.style.cursor = 'pointer'; }
       inputEl.style.height = 'auto';
       inputEl.style.height = Math.min(inputEl.scrollHeight, 200) + 'px';
     });
+
     inputEl.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); return; }
       set(typingRef, true);
@@ -617,26 +490,69 @@
       const text = input.value.trim();
       if (!text) return;
       if (text.length > 100) return;
-      push(messagesRef, {
+      const msgData = {
         username: myUsername, text,
         time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-      });
-      remove(typingRef);
-      clearTimeout(typingTimeout);
+      };
+      if (replyTo) { msgData.replyTo = replyTo; }
+      push(messagesRef, msgData);
+      remove(typingRef); clearTimeout(typingTimeout);
       input.value = ''; input.style.height = 'auto';
       const sendBtn = document.getElementById('send-btn');
       sendBtn.disabled = false; sendBtn.style.opacity = '1'; sendBtn.style.cursor = 'pointer';
+      cancelReply();
     }
+
+    // KIRIM GAMBAR
+    document.getElementById('img-input').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { alert('Ukuran gambar max 5MB!'); return; }
+
+      try {
+        const storageRef = sref(storage, `chatx/images/${Date.now()}_${file.name}`);
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        push(messagesRef, {
+          username: myUsername, text: '', imageUrl: url,
+          time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+        });
+      } catch(err) {
+        alert('Gagal upload gambar. Pastikan Firebase Storage sudah diaktifkan.');
+        console.error(err);
+      }
+      e.target.value = '';
+    });
   }
 
-  function addMessage(username, text, mine, time) {
+  function addMessage(msgId, username, text, mine, time, replyTo, imageUrl) {
     const msgs = document.getElementById('messages');
     const div = document.createElement('div');
     div.className = 'msg ' + (mine ? 'mine' : 'other');
+
+    // Reply preview
+    let replyHTML = '';
+    if (replyTo) {
+      replyHTML = `<div class="reply-preview"><strong>${escapeHtml(replyTo.username)}</strong>: ${escapeHtml((replyTo.text || '').substring(0, 60))}</div>`;
+    }
+
+    // Content (gambar atau teks)
+    let contentHTML = '';
+    if (imageUrl) {
+      contentHTML = `<img src="${imageUrl}" onclick="openLightbox('${imageUrl}')" />`;
+    } else {
+      contentHTML = escapeHtml(text);
+    }
+
+    // Tombol aksi: reply selalu ada, delete hanya admin
+    const deleteBtn = isAdmin ? `<button class="msg-action-btn delete" onclick="deleteMsg('${msgId}')" title="Hapus">🗑</button>` : '';
+    const replyBtn = `<button class="msg-action-btn" onclick="setReply('${msgId}', '${escapeHtml(username)}', '${escapeHtml((text || '').replace(/'/g, "\\'"))}')" title="Balas">↩</button>`;
+
     div.innerHTML = `
-      <div class="msg-name">${username}</div>
-      <div class="msg-bubble">${escapeHtml(text)}</div>
+      <div class="msg-name">${escapeHtml(username)}</div>
+      <div class="msg-bubble">${replyHTML}${contentHTML}</div>
       <div class="msg-time">${time || ''}</div>
+      <div class="msg-actions">${mine ? deleteBtn + replyBtn : replyBtn + deleteBtn}</div>
     `;
     msgs.appendChild(div);
   }
@@ -649,116 +565,76 @@
     msgs.appendChild(div);
   }
 
+  // LIGHTBOX
+  window.openLightbox = function(url) {
+    document.getElementById('lightbox-img').src = url;
+    document.getElementById('lightbox').className = 'show';
+  }
+
   function escapeHtml(text) {
+    if (!text) return '';
     return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // Fungsi hitung — gabungan dari web hitung data
+  // HITUNG DATA
   window.hitungData = function() {
     const input = document.getElementById('input');
     const rawData = input.value.trim();
     if (!rawData) return;
-
     try {
       const transactions = parseSimpleData(rawData);
-
       if (transactions.length === 0) {
-        // Tampilkan pesan error di chat
-        const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        addMessage('System', '⚠ Data tidak dikenali. Pastikan format data benar (timestamp + TJ + Total+PPN+Ongkir)', false, time);
-        input.value = '';
+        alert('⚠ Data tidak dikenali. Pastikan format benar.');
         return;
       }
-
       const totalAmount = transactions.reduce((a, t) => a + t.grandTotal, 0);
       const formatted = totalAmount.toLocaleString('id-ID');
       const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-      // Kirim hasil ke chat sebagai pesan
       const messagesRef = ref(db, 'chatx/global/messages');
-      push(messagesRef, {
-        username: myUsername,
-        text: `🧮 Total: Rp ${formatted} (${transactions.length} transaksi)`,
-        time
-      });
-
-      input.value = '';
-
-    } catch(e) {
-      console.error(e);
-    }
+      push(messagesRef, { username: myUsername, text: `🧮 Total: Rp ${formatted} (${transactions.length} transaksi)`, time });
+      input.value = ''; input.style.height = 'auto';
+    } catch(e) { console.error(e); }
   }
 
-  // ===== FUNGSI PARSING DATA =====
   function parseSimpleData(rawData) {
     const lines = rawData.split(/\r?\n/);
     const transactions = [];
     let currentTransaction = null;
-
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       if (!line) continue;
-
       if (/\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}/.test(line) && /TJ\d+/.test(line)) {
-        if (currentTransaction && currentTransaction.grandTotal > 0) {
-          transactions.push(currentTransaction);
-        }
+        if (currentTransaction && currentTransaction.grandTotal > 0) transactions.push(currentTransaction);
         const parts = line.split(/\t/);
-        currentTransaction = {
-          timestamp: parts[0]?.trim() || '',
-          transactionId: parts[1]?.trim() || '',
-          grandTotal: 0
-        };
+        currentTransaction = { timestamp: parts[0]?.trim() || '', transactionId: parts[1]?.trim() || '', grandTotal: 0 };
       }
-
       if (currentTransaction && line.includes('Total+PPN+Ongkir')) {
         let totalAmount = 0;
-
-        const pattern1 = /Total\+PPN\+Ongkir\s*:[\s\t]*([\d.,]+)/i;
-        const match1 = line.match(pattern1);
-        if (match1 && match1[1]) totalAmount = parseNumber(match1[1]);
-
-        if (totalAmount === 0) {
-          const match2 = line.match(/:[\s\t]*([\d.,]+)\s*$/);
-          if (match2 && match2[1]) totalAmount = parseNumber(match2[1]);
-        }
-
-        if (totalAmount === 0) {
-          const match3 = line.match(/([\d]{1,3}(?:\.\d{3})*)/);
-          if (match3 && match3[1]) totalAmount = parseNumber(match3[1]);
-        }
-
+        const m1 = line.match(/Total\+PPN\+Ongkir\s*:[\s\t]*([\d.,]+)/i);
+        if (m1) totalAmount = parseNumber(m1[1]);
+        if (!totalAmount) { const m2 = line.match(/:[\s\t]*([\d.,]+)\s*$/); if (m2) totalAmount = parseNumber(m2[1]); }
+        if (!totalAmount) { const m3 = line.match(/([\d]{1,3}(?:\.\d{3})*)/); if (m3) totalAmount = parseNumber(m3[1]); }
         if (totalAmount > 0) currentTransaction.grandTotal = totalAmount;
       }
     }
-
-    if (currentTransaction && currentTransaction.grandTotal > 0) {
-      transactions.push(currentTransaction);
-    }
-
+    if (currentTransaction && currentTransaction.grandTotal > 0) transactions.push(currentTransaction);
     return transactions;
   }
 
-  function parseNumber(numberString) {
-    if (!numberString) return 0;
-    let cleanString = numberString.toString().trim();
-
-    if (cleanString.includes('.') && !cleanString.includes(',')) {
-      cleanString = cleanString.replace(/\./g, '');
-    } else if (cleanString.includes(',') && !cleanString.includes('.')) {
-      cleanString = cleanString.replace(/,/g, '');
-    } else if (cleanString.includes('.') && cleanString.includes(',')) {
-      cleanString = cleanString.replace(/\./g, '').replace(',', '.');
-      cleanString = Math.floor(parseFloat(cleanString));
-    }
-
-    cleanString = cleanString.toString().replace(/[^\d]/g, '');
-    return parseInt(cleanString) || 0;
+  function parseNumber(s) {
+    if (!s) return 0;
+    let c = s.toString().trim();
+    if (c.includes('.') && !c.includes(',')) c = c.replace(/\./g, '');
+    else if (c.includes(',') && !c.includes('.')) c = c.replace(/,/g, '');
+    else if (c.includes('.') && c.includes(',')) { c = c.replace(/\./g, '').replace(',', '.'); c = Math.floor(parseFloat(c)); }
+    c = c.toString().replace(/[^\d]/g, '');
+    return parseInt(c) || 0;
   }
 </script>
 
 </body>
 </html>
+
 
 
 
