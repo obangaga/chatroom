@@ -346,18 +346,23 @@
     'oban':   { password: 'obanAdmin1', admin: true  },
   };
 
-  // BACA URL PARAMETER ?user=nama
+  // =============================================
+  // DEVICE BINDING - Kunci komputer ke 1 akun
+  // =============================================
+  const DEVICE_KEY = 'chatx_device_owner';
+
+  // Baca URL parameter ?user=nama
   const urlParams = new URLSearchParams(window.location.search);
   const urlUser = urlParams.get('user')?.trim().toLowerCase() || '';
 
-  // Jika URL punya ?user=, kunci username dan sembunyikan input username
-  if (urlUser && ACCOUNTS[urlUser]) {
-    // Sembunyikan input username, tampilkan label terkunci
+  // Cek apakah komputer ini sudah terikat ke akun tertentu
+  const deviceOwner = localStorage.getItem(DEVICE_KEY);
+
+  function setupLoginUI(lockedUser) {
     const usernameInput = document.getElementById('username-input');
-    usernameInput.value = urlUser;
+    usernameInput.value = lockedUser;
     usernameInput.style.display = 'none';
 
-    // Tampilkan label "komputer ini untuk [nama]"
     const lockedLabel = document.createElement('div');
     lockedLabel.style.cssText = `
       background: #00ff8810; border: 1px solid #00ff8830;
@@ -366,10 +371,46 @@
       letter-spacing: 1px; margin-bottom: 10px;
       display: flex; align-items: center; gap: 8px;
     `;
-    lockedLabel.innerHTML = `<span style="font-size:1rem;">🖥️</span> Komputer: <strong style="color:#fff;">${urlUser.toUpperCase()}</strong>`;
+    lockedLabel.innerHTML = `<span style="font-size:1rem;">🖥️</span> Komputer: <strong style="color:#fff;">${lockedUser.toUpperCase()}</strong>`;
     usernameInput.parentNode.insertBefore(lockedLabel, usernameInput);
+  }
+
+  function blockDevice(attemptedUser) {
+    const usernameInput = document.getElementById('username-input');
+    usernameInput.style.display = 'none';
+    document.getElementById('pin-input').style.display = 'none';
+    document.getElementById('action-btn').style.display = 'none';
+
+    const blockedDiv = document.createElement('div');
+    blockedDiv.style.cssText = `
+      background: #ff446615; border: 1px solid #ff446640;
+      padding: 20px; font-family: 'Space Mono', monospace;
+      font-size: 0.75rem; line-height: 1.8; text-align: center;
+    `;
+    blockedDiv.innerHTML = `
+      <div style="font-size:2rem; margin-bottom:12px;">🚫</div>
+      <div style="color:#ff4466; font-weight:bold; font-size:0.9rem; margin-bottom:8px;">AKSES DITOLAK</div>
+      <div style="color:#888;">Komputer ini terdaftar untuk akun lain.</div>
+      <div style="color:#888;">Hubungi admin jika ada masalah.</div>
+    `;
+    usernameInput.parentNode.insertBefore(blockedDiv, usernameInput);
+  }
+
+  // LOGIKA DEVICE BINDING
+  if (deviceOwner) {
+    // Komputer sudah terikat ke akun tertentu
+    if (urlUser && urlUser !== deviceOwner && !ACCOUNTS[urlUser]?.admin) {
+      // Ada yang coba pakai URL akun lain — TOLAK
+      blockDevice(urlUser);
+    } else {
+      // Tampilkan UI login terkunci sesuai pemilik komputer
+      setupLoginUI(deviceOwner);
+    }
+  } else if (urlUser && ACCOUNTS[urlUser]) {
+    // Komputer belum terikat — daftarkan sekarang dengan akun dari URL
+    // (Pendaftaran terjadi saat login berhasil pertama kali)
+    setupLoginUI(urlUser);
   } else if (urlUser && !ACCOUNTS[urlUser]) {
-    // URL user tidak valid — tampilkan error di halaman login
     document.getElementById('error-msg').textContent = '⚠ Komputer ini tidak terdaftar';
     document.getElementById('action-btn').disabled = true;
   }
@@ -377,19 +418,18 @@
   // CEK SESI
   const savedSession = sessionStorage.getItem(SESSION_KEY);
   if (savedSession && ACCOUNTS[savedSession]) {
-    // Jika ada URL user, pastikan sesi cocok dengan URL user
-    if (!urlUser || savedSession === urlUser) {
+    const owner = deviceOwner || urlUser;
+    if (!owner || savedSession === owner || ACCOUNTS[savedSession]?.admin) {
       myUsername = savedSession; startChat();
     } else {
-      // Sesi berbeda dengan URL user — hapus sesi lama
       sessionStorage.removeItem(SESSION_KEY);
     }
   }
 
-  // AUTH - Login Only
+  // AUTH - Login dengan Device Binding
   window.handleAuth = function() {
-    // Ambil username dari URL param (jika ada) atau dari input
-    const username = urlUser || document.getElementById('username-input').value.trim().toLowerCase();
+    const owner = deviceOwner || urlUser;
+    const username = owner || document.getElementById('username-input').value.trim().toLowerCase();
     const password = document.getElementById('pin-input').value.trim();
     const errEl = document.getElementById('error-msg');
     errEl.textContent = '';
@@ -400,6 +440,11 @@
     const account = ACCOUNTS[username];
     if (!account) { errEl.textContent = '⚠ Username tidak ditemukan'; return; }
     if (account.password !== password) { errEl.textContent = '⚠ Password salah'; return; }
+
+    // Ikat komputer ke akun ini (jika belum terikat)
+    if (!deviceOwner) {
+      localStorage.setItem(DEVICE_KEY, username);
+    }
 
     myUsername = username;
     sessionStorage.setItem(SESSION_KEY, myUsername);
@@ -412,7 +457,6 @@
   // LOGOUT
   window.doLogout = function() {
     sessionStorage.removeItem(SESSION_KEY);
-    // Reload dengan tetap mempertahankan URL param ?user=
     location.reload();
   }
 
