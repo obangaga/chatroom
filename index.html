@@ -399,8 +399,8 @@
   // LOGIKA DEVICE BINDING
   if (deviceOwner) {
     // Komputer sudah terikat ke akun tertentu
-    if (urlUser && urlUser !== deviceOwner && !ACCOUNTS[urlUser]?.admin) {
-      // Ada yang coba pakai URL akun lain — TOLAK
+    if (urlUser && urlUser !== deviceOwner && deviceOwner !== 'oban') {
+      // Bukan device oban & coba pakai URL akun lain — TOLAK
       blockDevice(urlUser);
     } else {
       // Tampilkan UI login terkunci sesuai pemilik komputer
@@ -419,7 +419,7 @@
   const savedSession = sessionStorage.getItem(SESSION_KEY);
   if (savedSession && ACCOUNTS[savedSession]) {
     const owner = deviceOwner || urlUser;
-    if (!owner || savedSession === owner || ACCOUNTS[savedSession]?.admin) {
+    if (!owner || savedSession === owner || deviceOwner === 'oban') {
       myUsername = savedSession; startChat();
     } else {
       sessionStorage.removeItem(SESSION_KEY);
@@ -429,7 +429,10 @@
   // AUTH - Login dengan Device Binding
   window.handleAuth = function() {
     const owner = deviceOwner || urlUser;
-    const username = owner || document.getElementById('username-input').value.trim().toLowerCase();
+    // Device oban bisa login akun manapun, device lain terkunci ke owner
+    const username = (deviceOwner === 'oban')
+      ? (urlUser || document.getElementById('username-input').value.trim().toLowerCase())
+      : (owner || document.getElementById('username-input').value.trim().toLowerCase());
     const password = document.getElementById('pin-input').value.trim();
     const errEl = document.getElementById('error-msg');
     errEl.textContent = '';
