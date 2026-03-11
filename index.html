@@ -236,7 +236,7 @@
       <button class="tab-btn inactive" id="tab-register" onclick="switchTab('register')">REGISTER</button>
     </div>
     <input type="text" id="username-input" placeholder="Nama kamu..." maxlength="20" />
-    <input type="password" id="pin-input" placeholder="Password..." />
+    <input type="password" id="pin-input" placeholder="PIN 4 angka..." maxlength="4" inputmode="numeric" />
     <div class="error-msg" id="error-msg"></div>
     <button class="login-btn" id="action-btn" onclick="handleAuth()">MASUK →</button>
   </div>
@@ -318,6 +318,7 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getDatabase, ref, push, onValue, set, get, remove, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
+  
 
   const ADMIN_USERNAME = 'oban';
   const SESSION_KEY = 'chatx_session';
@@ -691,71 +692,7 @@
     return parseInt(c) || 0;
   }
 </script>
-// ===============================
-// OBAN OFFICE LOGIN SYSTEM
-// ===============================
 
-const USERS = {
-  ahmad: "1111",
-  roni: "2222",
-  andre: "3333",
-  rendy: "4444",
-  kenzo: "5555",
-  neyma: "9999"
-};
-
-function checkDeviceOwner(username){
-
-  const owner = localStorage.getItem("device_owner");
-
-  if(!owner){
-    localStorage.setItem("device_owner", username);
-    return true;
-  }
-
-  if(owner !== username){
-    alert("Komputer ini hanya untuk user: " + owner);
-    return false;
-  }
-
-  return true;
-}
-
-
-// fungsi login baru
-window.handleAuth = function(){
-
-  const username = document
-    .getElementById("username-input")
-    .value
-    .trim()
-    .toLowerCase();
-
-  const password = document
-    .getElementById("pin-input")
-    .value
-    .trim();
-
-  if(!USERS[username]){
-    alert("User tidak terdaftar");
-    return;
-  }
-
-  if(USERS[username] !== password){
-    alert("Password salah");
-    return;
-  }
-
-  if(!checkDeviceOwner(username)){
-    return;
-  }
-
-  myUsername = username;
-
-  sessionStorage.setItem("oban_username", username);
-
-  startChat();
-};
 </body>
 </html>
 
