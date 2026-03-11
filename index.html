@@ -317,6 +317,38 @@
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getDatabase, ref, push, onValue, set, get, remove, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+// ==============================
+// OBAN OFFICE LOGIN SYSTEM
+// ==============================
+
+const USERS = {
+  ahmad: "1234",
+  roni: "1234",
+  andre: "1234",
+  rendy: "1234",
+  kenzo: "1234",
+  oban: "admin123"
+};
+
+// cek komputer owner
+function checkDeviceOwner(username){
+
+  let owner = localStorage.getItem("device_owner");
+
+  // jika komputer belum punya owner
+  if(!owner){
+    localStorage.setItem("device_owner", username);
+    return true;
+  }
+
+  // jika owner berbeda
+  if(owner !== username){
+    alert("Komputer ini hanya untuk user: " + owner);
+    return false;
+  }
+
+  return true;
+}
   
 
   const ADMIN_USERNAME = 'oban';
