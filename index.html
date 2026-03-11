@@ -346,13 +346,50 @@
     'oban':   { password: 'obanAdmin1', admin: true  },
   };
 
+  // BACA URL PARAMETER ?user=nama
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlUser = urlParams.get('user')?.trim().toLowerCase() || '';
+
+  // Jika URL punya ?user=, kunci username dan sembunyikan input username
+  if (urlUser && ACCOUNTS[urlUser]) {
+    // Sembunyikan input username, tampilkan label terkunci
+    const usernameInput = document.getElementById('username-input');
+    usernameInput.value = urlUser;
+    usernameInput.style.display = 'none';
+
+    // Tampilkan label "komputer ini untuk [nama]"
+    const lockedLabel = document.createElement('div');
+    lockedLabel.style.cssText = `
+      background: #00ff8810; border: 1px solid #00ff8830;
+      color: var(--accent); padding: 13px 16px;
+      font-family: 'Space Mono', monospace; font-size: 0.8rem;
+      letter-spacing: 1px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    `;
+    lockedLabel.innerHTML = `<span style="font-size:1rem;">🖥️</span> Komputer: <strong style="color:#fff;">${urlUser.toUpperCase()}</strong>`;
+    usernameInput.parentNode.insertBefore(lockedLabel, usernameInput);
+  } else if (urlUser && !ACCOUNTS[urlUser]) {
+    // URL user tidak valid — tampilkan error di halaman login
+    document.getElementById('error-msg').textContent = '⚠ Komputer ini tidak terdaftar';
+    document.getElementById('action-btn').disabled = true;
+  }
+
   // CEK SESI
   const savedSession = sessionStorage.getItem(SESSION_KEY);
-  if (savedSession && ACCOUNTS[savedSession]) { myUsername = savedSession; startChat(); }
+  if (savedSession && ACCOUNTS[savedSession]) {
+    // Jika ada URL user, pastikan sesi cocok dengan URL user
+    if (!urlUser || savedSession === urlUser) {
+      myUsername = savedSession; startChat();
+    } else {
+      // Sesi berbeda dengan URL user — hapus sesi lama
+      sessionStorage.removeItem(SESSION_KEY);
+    }
+  }
 
   // AUTH - Login Only
   window.handleAuth = function() {
-    const username = document.getElementById('username-input').value.trim().toLowerCase();
+    // Ambil username dari URL param (jika ada) atau dari input
+    const username = urlUser || document.getElementById('username-input').value.trim().toLowerCase();
     const password = document.getElementById('pin-input').value.trim();
     const errEl = document.getElementById('error-msg');
     errEl.textContent = '';
@@ -373,7 +410,11 @@
   document.getElementById('username-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('pin-input').focus(); });
 
   // LOGOUT
-  window.doLogout = function() { sessionStorage.removeItem(SESSION_KEY); location.reload(); }
+  window.doLogout = function() {
+    sessionStorage.removeItem(SESSION_KEY);
+    // Reload dengan tetap mempertahankan URL param ?user=
+    location.reload();
+  }
 
   // HAPUS SEMUA
   window.showConfirm = () => { document.getElementById('confirm-overlay').className = 'show'; }
