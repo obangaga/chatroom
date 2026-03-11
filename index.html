@@ -54,11 +54,7 @@
   .login-logo { font-size: 2.5rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 4px; }
   .login-logo span { color: var(--accent); }
   .login-sub { color: var(--muted); font-family: 'Space Mono', monospace; font-size: 0.7rem; margin-bottom: 28px; letter-spacing: 2px; }
-  .tab-bar { display: flex; margin-bottom: 20px; border: 1px solid var(--border); }
-  .tab-btn { flex: 1; padding: 10px; border: none; font-family: 'Syne', sans-serif; font-weight: 700; cursor: pointer; font-size: 0.85rem; letter-spacing: 1px; transition: all 0.2s; }
-  .tab-btn.active { background: var(--accent); color: #000; }
-  .tab-btn.inactive { background: transparent; color: var(--muted); }
-  .login-box input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 13px 16px; font-family: 'Syne', sans-serif; font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 10px; }
+  .login-box input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 13px 16px; font-family: 'Syne', sans-serif; font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 10px; margin-top: 0; }
   .login-box input:focus { border-color: var(--accent); }
   .login-box input::placeholder { color: var(--muted); }
   .error-msg { font-family: 'Space Mono', monospace; font-size: 0.68rem; color: var(--danger); margin-bottom: 10px; min-height: 18px; }
@@ -230,13 +226,9 @@
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">Oban <span>Chat</span></div>
-    <div class="login-sub">// REALTIME MESSAGING</div>
-    <div class="tab-bar">
-      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">LOGIN</button>
-      <button class="tab-btn inactive" id="tab-register" onclick="switchTab('register')">REGISTER</button>
-    </div>
-    <input type="text" id="username-input" placeholder="Nama kamu..." maxlength="20" />
-    <input type="password" id="pin-input" placeholder="PIN 4 angka..." maxlength="4" inputmode="numeric" />
+    <div class="login-sub">// OBAN INTERNAL SYSTEM</div>
+    <input type="text" id="username-input" placeholder="Username..." maxlength="20" autocomplete="username" />
+    <input type="password" id="pin-input" placeholder="Password..." maxlength="20" autocomplete="current-password" />
     <div class="error-msg" id="error-msg"></div>
     <button class="login-btn" id="action-btn" onclick="handleAuth()">MASUK →</button>
   </div>
@@ -320,7 +312,6 @@
 
   
 
-  const ADMIN_USERNAME = 'oban';
   const SESSION_KEY = 'chatx_session';
 
   const firebaseConfig = {
@@ -338,52 +329,44 @@
 
 
   let myUsername = '';
-  let currentTab = 'login';
   let typingTimeout;
-  let replyTo = null; // { msgId, username, text }
+  let replyTo = null;
   let isAdmin = false;
+
+  // =============================================
+  // AKUN HARDCODED - Ganti password sesuai kebutuhan
+  // =============================================
+  const ACCOUNTS = {
+    'ahmad':  { password: 'ahmad123',  admin: false },
+    'roni':   { password: 'roni456',   admin: false },
+    'andre':  { password: 'andre789',  admin: false },
+    'rendy':  { password: 'rendy321',  admin: false },
+    'kenzo':  { password: 'kenzo654',  admin: false },
+    'neyma':  { password: 'neyma987',  admin: false },
+    'oban':   { password: 'obanAdmin1', admin: true  },
+  };
 
   // CEK SESI
   const savedSession = sessionStorage.getItem(SESSION_KEY);
-  if (savedSession) { myUsername = savedSession; startChat(); }
+  if (savedSession && ACCOUNTS[savedSession]) { myUsername = savedSession; startChat(); }
 
-  // TAB SWITCH
-  window.switchTab = function(tab) {
-    currentTab = tab;
-    document.getElementById('tab-login').className = 'tab-btn ' + (tab === 'login' ? 'active' : 'inactive');
-    document.getElementById('tab-register').className = 'tab-btn ' + (tab === 'register' ? 'active' : 'inactive');
-    document.getElementById('action-btn').textContent = tab === 'login' ? 'MASUK →' : 'DAFTAR →';
-    document.getElementById('error-msg').textContent = '';
-    document.getElementById('username-input').value = '';
-    document.getElementById('pin-input').value = '';
-  }
-
-  // AUTH
-  window.handleAuth = async function() {
+  // AUTH - Login Only
+  window.handleAuth = function() {
     const username = document.getElementById('username-input').value.trim().toLowerCase();
-    const pin = document.getElementById('pin-input').value.trim();
+    const password = document.getElementById('pin-input').value.trim();
     const errEl = document.getElementById('error-msg');
-    const btn = document.getElementById('action-btn');
     errEl.textContent = '';
-    if (!username) { errEl.textContent = '⚠ Nama tidak boleh kosong'; return; }
-    if (!/^\d{4}$/.test(pin)) { errEl.textContent = '⚠ PIN harus tepat 4 angka'; return; }
-    btn.disabled = true; btn.textContent = 'Loading...';
-    try {
-      const userRef = ref(db, `chatx/users/${username}`);
-      const snapshot = await get(userRef);
-      if (currentTab === 'register') {
-        if (snapshot.exists()) { errEl.textContent = '⚠ Nama sudah digunakan'; btn.disabled = false; btn.textContent = 'DAFTAR →'; return; }
-        await set(userRef, { pin, createdAt: Date.now() });
-        myUsername = username; sessionStorage.setItem(SESSION_KEY, myUsername); startChat();
-      } else {
-        if (!snapshot.exists()) { errEl.textContent = '⚠ Nama tidak ditemukan, silakan register'; btn.disabled = false; btn.textContent = 'MASUK →'; return; }
-        if (snapshot.val().pin !== pin) { errEl.textContent = '⚠ PIN salah'; btn.disabled = false; btn.textContent = 'MASUK →'; return; }
-        myUsername = username; sessionStorage.setItem(SESSION_KEY, myUsername); startChat();
-      }
-    } catch(e) {
-      errEl.textContent = '⚠ Gagal terhubung ke server';
-      btn.disabled = false; btn.textContent = currentTab === 'login' ? 'MASUK →' : 'DAFTAR →';
-    }
+
+    if (!username) { errEl.textContent = '⚠ Username tidak boleh kosong'; return; }
+    if (!password) { errEl.textContent = '⚠ Password tidak boleh kosong'; return; }
+
+    const account = ACCOUNTS[username];
+    if (!account) { errEl.textContent = '⚠ Username tidak ditemukan'; return; }
+    if (account.password !== password) { errEl.textContent = '⚠ Password salah'; return; }
+
+    myUsername = username;
+    sessionStorage.setItem(SESSION_KEY, myUsername);
+    startChat();
   }
 
   document.getElementById('pin-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') window.handleAuth(); });
@@ -427,7 +410,7 @@
     const typingRef = ref(db, `chatx/global/typing/${myUsername}`);
     const presenceRef = ref(db, `chatx/global/presence/${myUsername}`);
 
-    isAdmin = myUsername === ADMIN_USERNAME;
+    isAdmin = ACCOUNTS[myUsername]?.admin === true;
 
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
