@@ -124,7 +124,7 @@
   }
   .reply-preview strong { color: var(--accent2); }
 
-  .msg-bubble { padding: 10px 16px; font-size: 0.95rem; line-height: 1.5; }
+  .msg-bubble { padding: 10px 16px; font-size: 0.95rem; line-height: 1.5; cursor: pointer; }
   .msg.mine .msg-bubble { background: var(--msg-mine); border: 1px solid #00ff8830; border-radius: 12px 12px 2px 12px; }
   .msg.other .msg-bubble { background: var(--msg-other); border: 1px solid var(--border); border-radius: 12px 12px 12px 2px; }
 
@@ -162,7 +162,63 @@
   #reply-bar-text strong { color: var(--accent2); }
   #reply-close { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1rem; padding: 0; }
 
+  .msg-bubble.total-msg {
+    font-size: 1.4rem !important;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    padding: 14px 20px;
+  }
+
+  .msg-name .agent-badge {
+    font-size: 0.55rem; background: #00aaff20; border: 1px solid #00aaff40;
+    color: var(--accent2); padding: 1px 6px; border-radius: 10px;
+    margin-left: 6px; letter-spacing: 1px; font-family: 'Space Mono', monospace;
+    vertical-align: middle;
+  }
+
   .sys-msg { text-align: center; font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; padding: 4px 0; }
+
+  /* EMOJI BAR */
+  #emoji-bar {
+    display: none; flex-direction: column;
+    background: var(--surface); border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  #emoji-bar.show { display: flex; }
+  #emoji-categories {
+    display: flex; gap: 4px; padding: 8px 12px 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .emoji-cat-btn {
+    background: transparent; border: none; font-size: 1.2rem;
+    padding: 4px 8px; cursor: pointer; border-radius: 6px;
+    transition: background 0.2s; opacity: 0.5;
+  }
+  .emoji-cat-btn.active, .emoji-cat-btn:hover { background: #ffffff15; opacity: 1; }
+  #emoji-list {
+    display: flex; gap: 4px; padding: 8px 12px;
+    overflow-x: auto; flex-wrap: nowrap;
+  }
+  #emoji-list::-webkit-scrollbar { height: 3px; }
+  #emoji-list::-webkit-scrollbar-thumb { background: var(--border); }
+  .emoji-item {
+    font-size: 1.5rem; cursor: pointer; padding: 4px;
+    border-radius: 6px; transition: background 0.15s, transform 0.1s;
+    flex-shrink: 0; user-select: none;
+  }
+  .emoji-item:hover { background: #ffffff15; transform: scale(1.2); }
+  .emoji-item:active { transform: scale(0.9); }
+
+  #emoji-btn {
+    background: #7c3aed; border: none;
+    width: 44px; height: 44px; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; border-radius: 4px;
+    font-size: 1.2rem; transition: all 0.2s; flex-shrink: 0;
+  }
+  #emoji-btn:hover { opacity: 0.85; }
+  #emoji-btn:active { transform: scale(0.93); }
+  #emoji-btn.active { background: #6d28d9; }
 
   /* FOOTER */
   footer { padding: 16px 24px; border-top: 1px solid var(--border); background: var(--surface); display: flex; gap: 12px; align-items: flex-end; flex-shrink: 0; }
@@ -176,8 +232,8 @@
   #send-btn:active { transform: scale(0.93); }
   #send-btn svg { width: 18px; height: 18px; }
 
-  #calc-btn { background: var(--surface); color: var(--accent2); border: 1px solid var(--border); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
-  #calc-btn:hover { border-color: var(--accent2); background: #00aaff15; }
+  #calc-btn { background: #f97316; color: #fff; border: none; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
+  #calc-btn:hover { opacity: 0.85; }
   #calc-btn:active { transform: scale(0.93); }
   #calc-btn svg { width: 18px; height: 18px; }
 
@@ -225,8 +281,8 @@
 <!-- LOGIN / REGISTER -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo">Oban <span>Chat</span></div>
-    <div class="login-sub">// OBAN INTERNAL SYSTEM</div>
+    <div class="login-logo">RUANG <span>RAHASIA</span></div>
+    <div class="login-sub">// Camellia Secret Room</div>
     <input type="text" id="username-input" placeholder="Username..." maxlength="20" autocomplete="username" />
     <input type="password" id="pin-input" placeholder="Password..." maxlength="20" autocomplete="current-password" />
     <div class="error-msg" id="error-msg"></div>
@@ -255,13 +311,14 @@
 <div id="app">
   <header>
     <div class="header-left">
-      <div class="logo">Oban <span>Chat</span></div>
+      <div class="logo">RUANG <span>RAHASIA</span></div>
       <div class="room-badge"># GLOBAL</div>
       <div class="online-count"><div class="dot"></div><span id="online-count">1 online</span></div>
     </div>
     <div class="header-right">
       <button id="clear-btn" onclick="showConfirm()">🗑 HAPUS CHAT</button>
       <div class="user-info">logged as <strong id="display-username"></strong> <span id="admin-tag"></span></div>
+      <div id="session-timer" style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);display:none;">⏱ <span id="timer-display">10:00</span></div>
       <button id="logout-btn" onclick="doLogout()">LOGOUT</button>
     </div>
   </header>
@@ -273,6 +330,21 @@
     <span id="typing-text"></span>
   </div>
 
+  <!-- EMOJI PICKER BAR -->
+  <div id="emoji-bar">
+    <div id="emoji-categories">
+      <button class="emoji-cat-btn active" onclick="showEmojiCat('smileys')">😀</button>
+      <button class="emoji-cat-btn" onclick="showEmojiCat('gestures')">👍</button>
+      <button class="emoji-cat-btn" onclick="showEmojiCat('hearts')">❤️</button>
+      <button class="emoji-cat-btn" onclick="showEmojiCat('celebration')">🎉</button>
+      <button class="emoji-cat-btn" onclick="showEmojiCat('nature')">🌿</button>
+      <button class="emoji-cat-btn" onclick="showEmojiCat('food')">🍕</button>
+      <button class="emoji-cat-btn" onclick="showEmojiCat('activity')">⚽</button>
+      <button class="emoji-cat-btn" onclick="showEmojiCat('symbols')">💯</button>
+    </div>
+    <div id="emoji-list"></div>
+  </div>
+
   <!-- REPLY BAR -->
   <div id="reply-bar">
     <div id="reply-bar-text"></div>
@@ -282,12 +354,7 @@
   <footer>
     <textarea id="input" placeholder="Ketik pesan atau paste data..." rows="1"></textarea>
     <input type="file" id="img-input" accept="image/*" />
-    <button id="img-btn" onclick="document.getElementById('img-input').click()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
-        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-        <polyline points="21 15 16 10 5 21"/>
-      </svg>
-    </button>
+    <button id="emoji-btn" onclick="toggleEmojiBar()">😊</button>
     <button id="calc-btn" onclick="hitungData()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="4" y="2" width="16" height="20" rx="2"></rect>
@@ -371,7 +438,7 @@
       letter-spacing: 1px; margin-bottom: 10px;
       display: flex; align-items: center; gap: 8px;
     `;
-    lockedLabel.innerHTML = `<span style="font-size:1rem;">🖥️</span> Komputer: <strong style="color:#fff;">${lockedUser.toUpperCase()}</strong>`;
+    lockedLabel.innerHTML = `<span style="font-size:1rem;">🖥️</span> Komputer: <strong style="color:#fff; letter-spacing:4px;">●●●●●</strong>`;
     usernameInput.parentNode.insertBefore(lockedLabel, usernameInput);
   }
 
@@ -460,6 +527,7 @@
   // LOGOUT
   window.doLogout = function() {
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem('chatx_session_start');
     location.reload();
   }
 
@@ -509,6 +577,40 @@
       document.getElementById('admin-tag').innerHTML = '<span style="color:#ffaa00;font-size:0.6rem;">[ADMIN]</span>';
     }
 
+    // AUTO LOGOUT TIMER - 10 menit, tahan refresh
+    const SESSION_DURATION = 10 * 60 * 1000; // 10 menit dalam milidetik
+    const SESSION_START_KEY = 'chatx_session_start';
+
+    // Jika belum ada waktu mulai, simpan sekarang
+    if (!sessionStorage.getItem(SESSION_START_KEY)) {
+      sessionStorage.setItem(SESSION_START_KEY, Date.now().toString());
+    }
+
+    const sessionStart = parseInt(sessionStorage.getItem(SESSION_START_KEY));
+    const timerEl = document.getElementById('session-timer');
+    const timerDisplay = document.getElementById('timer-display');
+    timerEl.style.display = 'block';
+
+    const countdown = setInterval(() => {
+      const elapsed = Date.now() - sessionStart;
+      const secondsLeft = Math.max(0, Math.floor((SESSION_DURATION - elapsed) / 1000));
+      const m = Math.floor(secondsLeft / 60).toString().padStart(2, '0');
+      const s = (secondsLeft % 60).toString().padStart(2, '0');
+      timerDisplay.textContent = `${m}:${s}`;
+
+      // Warna berubah saat sisa 2 menit
+      if (secondsLeft <= 120) timerEl.style.color = '#ffaa00';
+      // Warna merah saat sisa 30 detik
+      if (secondsLeft <= 30) timerEl.style.color = 'var(--danger)';
+      // Logout saat habis
+      if (secondsLeft <= 0) {
+        clearInterval(countdown);
+        sessionStorage.removeItem(SESSION_KEY);
+        sessionStorage.removeItem(SESSION_START_KEY);
+        location.reload();
+      }
+    }, 1000);
+
     set(presenceRef, true);
     onDisconnect(presenceRef).remove();
 
@@ -524,7 +626,7 @@
         const data = child.val();
         const msgId = child.key;
         if (data.system) addSystemMsg(data.text);
-        else addMessage(msgId, data.username, data.text, data.username === myUsername, data.time, data.replyTo, data.imageUrl);
+        else addMessage(msgId, data.username, data.text, data.username === myUsername, data.time, data.replyTo, data.imageUrl, data.isTotalMsg, data.isAgent);
       });
       msgs.scrollTop = msgs.scrollHeight;
     });
@@ -562,17 +664,62 @@
       const text = input.value.trim();
       if (!text) return;
       if (text.length > 100) return;
+
+      // Simpan replyTo sebelum di-reset
+      const currentReplyTo = replyTo;
+
       const msgData = {
         username: myUsername, text,
         time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
       };
-      if (replyTo) { msgData.replyTo = replyTo; }
+      if (currentReplyTo) { msgData.replyTo = currentReplyTo; }
       push(messagesRef, msgData);
       remove(typingRef); clearTimeout(typingTimeout);
       input.value = ''; input.style.height = 'auto';
       const sendBtn = document.getElementById('send-btn');
       sendBtn.disabled = false; sendBtn.style.opacity = '1'; sendBtn.style.cursor = 'pointer';
       cancelReply();
+
+      // Trigger oban agent jika:
+      // 1. Pesan mengandung @oban (panggilan pertama)
+      // 2. Pesan adalah reply ke pesan oban (lanjutan percakapan)
+      const isTagged = text.toLowerCase().includes('@oban');
+      const isReplyToOban = currentReplyTo && currentReplyTo.username === 'oban';
+      if (myUsername !== 'oban' && (isTagged || isReplyToOban)) {
+        triggerObanAgent(text, myUsername);
+      }
+    }
+
+    // OBAN AI AGENT
+    async function triggerObanAgent(message, username) {
+      const WORKER_URL = 'https://oban-agent.vivitnovitasari50.workers.dev';
+      try {
+        // Tampilkan typing indicator seolah oban sedang mengetik
+        const typingObanRef = ref(db, 'chatx/global/typing/oban');
+        set(typingObanRef, true);
+
+        const res = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, username })
+        });
+
+        const data = await res.json();
+        remove(typingObanRef);
+
+        if (data.reply) {
+          const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+          push(messagesRef, {
+            username: 'oban',
+            text: data.reply,
+            time,
+            isAgent: true
+          });
+        }
+      } catch (err) {
+        console.error('Oban agent error:', err);
+        remove(ref(db, 'chatx/global/typing/oban'));
+      }
     }
 
     // KIRIM GAMBAR - pakai Cloudinary (gratis)
@@ -615,7 +762,7 @@
     });
   }
 
-  function addMessage(msgId, username, text, mine, time, replyTo, imageUrl) {
+  function addMessage(msgId, username, text, mine, time, replyTo, imageUrl, isTotalMsg, isAgent) {
     const msgs = document.getElementById('messages');
     const div = document.createElement('div');
     div.className = 'msg ' + (mine ? 'mine' : 'other');
@@ -639,8 +786,8 @@
     const replyBtn = `<button class="msg-action-btn" onclick="setReply('${msgId}', '${escapeHtml(username)}', '${escapeHtml((text || '').replace(/'/g, "\\'"))}')" title="Balas">↩</button>`;
 
     div.innerHTML = `
-      <div class="msg-name" style="color: ${getUserColor(username)}">${escapeHtml(username)}</div>
-      <div class="msg-bubble">${replyHTML}${contentHTML}</div>
+      <div class="msg-name" style="color: ${getUserColor(username)}">${escapeHtml(username)}${isAgent ? '<span class="agent-badge">👨 Jakwire Nt</span>' : ''}</div>
+      <div class="msg-bubble${isTotalMsg ? ' total-msg' : ''}" onclick="setReply('${msgId}', '${escapeHtml(username)}', '${escapeHtml((text || '').replace(/'/g, "\\'"))}')">${replyHTML}${contentHTML}</div>
       <div class="msg-time">${time || ''}</div>
       <div class="msg-actions">${mine ? deleteBtn + replyBtn : replyBtn + deleteBtn}</div>
     `;
@@ -697,7 +844,7 @@
       const formatted = totalAmount.toLocaleString('id-ID');
       const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const messagesRef = ref(db, 'chatx/global/messages');
-      push(messagesRef, { username: myUsername, text: `🧮 Total: Rp ${formatted} (${transactions.length} transaksi)`, time });
+      push(messagesRef, { username: myUsername, text: `🧮 Total: Rp ${formatted}`, time, isTotalMsg: true });
       input.value = ''; input.style.height = 'auto';
     } catch(e) { console.error(e); }
   }
@@ -752,6 +899,68 @@
       reader.readAsDataURL(file);
     });
   }
+
+  // EMOJI PICKER
+  const EMOJI_DATA = {
+    smileys: ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🫣','🤭','🫡','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕'],
+    gestures: ['👍','👎','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👋','🤚','🖐️','✋','🖖','🤜','🤛','👊','✊','👏','🙌','🤲','🤝','🙏','✍️','💪','🦾','🦵','🦶','👂','👃','💅','🤳','💃','🕺'],
+    hearts: ['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❤️‍🔥','❤️‍🩹','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✝️','☪️','🕉️','✡️','🔯','🪯','☯️','☦️','🛐','⛎','♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'],
+    celebration: ['🎉','🎊','🎈','🎁','🎀','🎗️','🎟️','🎫','🏆','🥇','🥈','🥉','🏅','🎖️','🎪','🤹','🎭','🎨','🎬','🎤','🎧','🎼','🎵','🎶','🎹','🥁','🎷','🎺','🎸','🪕','🎻','🪗','🎮','🕹️','🃏','🀄','🎯','🎱','🎰','🧨','✨','🎇','🎆','🪄','🎠','🎡','🎢','💫','⭐','🌟','✨','💥','🔥','🌈'],
+    nature: ['🌿','🌱','🌲','🌳','🌴','🌵','🎋','🎍','🍀','🌾','🌺','🌸','🌼','🌻','🌹','🥀','🌷','🍄','🌰','🦔','🐾','🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐻‍❄️','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐔','🐧','🐦','🐤','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛','🦋','🐌','🐞','🐜','🦟','🦗','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍','🦧','🦣','🐘','🦛','🦏','🐪','🐫','🦒','🦘','🦬','🐃','🐂','🐄','🐎','🐖','🐏','🐑','🦙','🐐','🦌','🐕','🐩','🦮','🐈','🐈‍⬛','🪶','🐓','🦃','🦤','🦚','🦜','🦢','🦩','🕊️','🐇','🦝','🦨','🦡','🦫','🦦','🦥','🐁','🐀','🐿️'],
+    food: ['🍕','🍔','🍟','🌭','🌮','🌯','🫔','🥙','🧆','🥚','🍳','🥘','🍲','🫕','🥣','🥗','🍿','🧈','🧂','🥫','🍱','🍘','🍙','🍚','🍛','🍜','🍝','🍠','🍢','🍣','🍤','🍥','🥮','🍡','🥟','🥠','🥡','🍦','🍧','🍨','🍩','🍪','🎂','🍰','🧁','🥧','🍫','🍬','🍭','🍮','🍯','🍼','🥛','☕','🫖','🍵','🧃','🥤','🧋','🍶','🍺','🍻','🥂','🍷','🥃','🍸','🍹','🧉','🍾','🧊','🥄','🍴','🍽️','🥢','🫙'],
+    activity: ['⚽','🏀','🏈','⚾','🥎','🎾','🏐','🏉','🥏','🎱','🪀','🏓','🏸','🏒','🏑','🥍','🏏','🪃','🥅','⛳','🪁','🏹','🎣','🤿','🥊','🥋','🎽','🛹','🛼','🛷','⛸️','🥌','🎿','⛷️','🏂','🪂','🏋️','🤼','🤸','⛹️','🤺','🤾','🏌️','🏇','🧘','🏄','🏊','🤽','🚣','🧗','🚵','🚴','🏆','🥇','🥈','🥉','🏅','🎖️','🎗️','🎫','🎟️','🎪','🤹','🎭','🩰','🎨','🎬','🎤','🎧','🎼','🎵','🎶','🏋️‍♀️','🤼‍♀️','🤸‍♀️'],
+    symbols: ['💯','🔥','✨','⭐','🌟','💫','❗','❓','‼️','⁉️','🆕','🆓','🔝','🆙','🆒','🆖','🅰️','🅱️','🆎','🅾️','🆘','❌','⭕','🛑','⛔','📵','🚫','💲','💱','♻️','✅','☑️','🔘','🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🔺','🔻','🔷','🔶','🔹','🔸','▪️','▫️','🔲','🔳','⬛','⬜','◼️','◻️','◾','◽','😈','👿','💀','☠️','💩','🤡','👻','👽','👾','🤖','💋','💌','💘','💝','💖','💗','💓','💞','💕','💟','❣️','💔'],
+  };
+
+  let emojiBarOpen = false;
+  let currentEmojiCat = 'smileys';
+
+  window.toggleEmojiBar = function() {
+    emojiBarOpen = !emojiBarOpen;
+    const bar = document.getElementById('emoji-bar');
+    const btn = document.getElementById('emoji-btn');
+    if (emojiBarOpen) {
+      bar.className = 'show';
+      btn.className = 'active';
+      showEmojiCat(currentEmojiCat);
+    } else {
+      bar.className = '';
+      btn.className = '';
+    }
+  }
+
+  window.showEmojiCat = function(cat) {
+    currentEmojiCat = cat;
+    // Update active category button
+    document.querySelectorAll('.emoji-cat-btn').forEach((b, i) => {
+      b.className = 'emoji-cat-btn' + (Object.keys(EMOJI_DATA)[i] === cat ? ' active' : '');
+    });
+    // Render emojis
+    const list = document.getElementById('emoji-list');
+    list.innerHTML = EMOJI_DATA[cat].map(e =>
+      `<span class="emoji-item" onclick="insertEmoji('${e}')">${e}</span>`
+    ).join('');
+  }
+
+  window.insertEmoji = function(emoji) {
+    const input = document.getElementById('input');
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    input.value = input.value.substring(0, start) + emoji + input.value.substring(end);
+    input.selectionStart = input.selectionEnd = start + emoji.length;
+    input.focus();
+    // Trigger height resize
+    input.dispatchEvent(new Event('input'));
+  }
+
+  // Tutup emoji bar saat klik di luar
+  document.addEventListener('click', (e) => {
+    if (emojiBarOpen && !e.target.closest('#emoji-bar') && !e.target.closest('#emoji-btn')) {
+      emojiBarOpen = false;
+      document.getElementById('emoji-bar').className = '';
+      document.getElementById('emoji-btn').className = '';
+    }
+  });
 
   function parseNumber(s) {
     if (!s) return 0;
